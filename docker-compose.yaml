@@ -1,0 +1,11 @@
+volumes:
+    db:
+
+services:
+    finance_db:
+        build: ./database
+
+        volumes:
+            - db:/var/lib/postgresql/data
+        ports:
+            - "5433:5432"
