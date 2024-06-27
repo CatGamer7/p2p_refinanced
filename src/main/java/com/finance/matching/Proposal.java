@@ -1,29 +1,24 @@
 package com.finance.matching;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.List;
 
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "LoanProposal")
 public class Proposal {
-    public Proposal(Long proposal_id, List<Match> matches) {
-        this.proposal_id = proposal_id;
-        this.matches = matches;
-    }
 
-    public Long getProposal_id() {
-        return proposal_id;
-    }
-
-    public void setProposal_id(Long proposal_id) {
-        this.proposal_id = proposal_id;
-    }
-
-    public List<Match> getMatches() {
-        return matches;
-    }
-
-    public void setMatches(List<Match> matches) {
-        this.matches = matches;
-    }
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long proposal_id;
+
+    @Column(name = "matches")
+    @OneToMany
     private List<Match> matches;
 }

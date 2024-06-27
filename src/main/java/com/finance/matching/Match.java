@@ -1,24 +1,36 @@
 package com.finance.matching;
 
+import com.finance.offer.Offer;
+import com.finance.request.Request;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.math.BigDecimal;
 
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "LoanMatches")
 public class Match {
 
-    public Match(Long match_id, Long request_id, Long offer_id, BigDecimal amount, int status) {
-        this.match_id = match_id;
-        this.request_id = request_id;
-        this.offer_id = offer_id;
-        this.amount = amount;
-        this.status = status;
-    }
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long match_id;
 
-    private enum matchStatus {
-        created, accepted
-    }
+    @Column(name = "request_id")
+    @ManyToOne
+    private Request request;
 
-    public Long match_id;
-    public Long request_id;
-    public Long offer_id;
-    public BigDecimal amount;
-    public int status;
+    @Column(name = "offer_id")
+    @ManyToOne
+    private Offer offer;
+
+    @Column(name = "amount")
+    private BigDecimal amount;
+
+    @Column(name = "status")
+    private MatchStatus status;
 }

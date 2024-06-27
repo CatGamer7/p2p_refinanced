@@ -1,25 +1,33 @@
 package com.finance.offer;
 
+import jakarta.persistence.*;
+import lombok.*;
+
 import java.math.BigDecimal;
 
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "LoanOffers")
 public class Offer {
-    public enum offerStatus{
-        available, matched
-    }
 
-    public Offer(Long offer_id, Long lender_id, BigDecimal amount, BigDecimal interest_rate, int status, Long duration_days) {
-        this.offer_id = offer_id;
-        this.lender_id = lender_id;
-        this.amount = amount;
-        this.interest_rate = interest_rate;
-        this.status = status;
-        this.duration_days = duration_days;
-    }
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long offer_id;
 
-    public Long offer_id;
-    public Long lender_id;
-    public BigDecimal amount;
-    public BigDecimal interest_rate;
-    public int status;
-    public Long duration_days;
+    @Column(name = "lender_id")
+    private Long lender_id;
+
+    @Column(name = "amount")
+    private BigDecimal amount;
+
+    @Column(name = "interest_rate")
+    private BigDecimal interest_rate;
+
+    @Column(name = "status")
+    private OfferStatus status;
+
+    @Column(name = "duration_days")
+    private Long duration_days;
 }

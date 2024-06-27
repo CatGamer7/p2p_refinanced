@@ -1,6 +1,7 @@
 package com.finance.matching.strategy.base;
 
 import com.finance.matching.Match;
+import com.finance.matching.MatchStatus;
 import com.finance.matching.Proposal;
 import com.finance.offer.Offer;
 import com.finance.request.Request;
@@ -16,10 +17,10 @@ public class MatchLinearGreedy implements MatchStrategy{
 
         //Get the closest amount
         List<Integer> selected = new ArrayList<Integer>();
-        BigDecimal target = inRequest.requested_amount;
+        BigDecimal target = inRequest.getRequested_amount();
         int smallestCandidate = data.size(); //Finish off remainder
         for (int i = 0; i < data.size(); i++) {
-            BigDecimal curentAmount = data.get(i).amount;
+            BigDecimal curentAmount = data.get(i).getAmount();
 
             if (target.compareTo(curentAmount) >= 0) {
                 target = target.subtract(curentAmount);
@@ -42,10 +43,10 @@ public class MatchLinearGreedy implements MatchStrategy{
             out.add(
                     new Match(
                             0L,
-                            inRequest.request_id,
-                            data.get(index).offer_id,
-                            data.get(index).amount,
-                            0
+                            inRequest,
+                            data.get(index),
+                            data.get(index).getAmount(),
+                            MatchStatus.created
                     )
             );
         }
@@ -56,10 +57,10 @@ public class MatchLinearGreedy implements MatchStrategy{
             out.add(
                     new Match(
                             0L,
-                            inRequest.request_id,
-                            data.get(smallestCandidate).offer_id,
+                            inRequest,
+                            data.get(smallestCandidate),
                             target,
-                            0
+                            MatchStatus.created
                     )
             );
         }

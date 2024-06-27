@@ -1,23 +1,30 @@
 package com.finance.request;
 
+import jakarta.persistence.*;
+import lombok.*;
+
 import java.math.BigDecimal;
 
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "LoanRequests")
 public class Request {
-    public enum requestStatus {
-        pending, matched, approved
-    }
 
-    public Request(Long request_id, Long borrower_id, BigDecimal requested_amount, String reason, int status) {
-        this.request_id = request_id;
-        this.borrower_id = borrower_id;
-        this.requested_amount = requested_amount;
-        this.reason = reason;
-        this.status = status;
-    }
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long request_id;
 
-    public Long request_id;
-    public Long borrower_id;
-    public BigDecimal requested_amount;
-    public String reason;
-    public int status;
+    @Column(name = "borrower_id")
+    private Long borrower_id;
+
+    @Column(name = "requested_amount")
+    private BigDecimal requested_amount;
+
+    @Column(name = "reason")
+    private String reason;
+
+    @Column(name = "status")
+    private RequestStatus status;
 }

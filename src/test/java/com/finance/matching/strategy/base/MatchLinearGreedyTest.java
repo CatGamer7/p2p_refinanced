@@ -2,7 +2,9 @@ package com.finance.matching.strategy.base;
 
 import com.finance.matching.Match;
 import com.finance.offer.Offer;
+import com.finance.offer.OfferStatus;
 import com.finance.request.Request;
+import com.finance.request.RequestStatus;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -24,61 +26,61 @@ class MatchLinearGreedyTest {
 
         //Case 1: exact min offers
         data = Arrays.asList(new Offer[] {
-                new Offer(0L, 0L, BigDecimal.valueOf(40000), BigDecimal.valueOf(5), 0, 91L),
-                new Offer(1L, 1L, BigDecimal.valueOf(20000), BigDecimal.valueOf(5), 0, 91L),
-                new Offer(2L, 2L, BigDecimal.valueOf(10000), BigDecimal.valueOf(5), 0, 91L),
-                new Offer(3L, 3L, BigDecimal.valueOf(10000), BigDecimal.valueOf(5), 0, 91L),
-                new Offer(4L, 4L, BigDecimal.valueOf(10000), BigDecimal.valueOf(5), 0, 91L),
+                new Offer(0L, 0L, BigDecimal.valueOf(40000), BigDecimal.valueOf(5), OfferStatus.available, 91L),
+                new Offer(1L, 1L, BigDecimal.valueOf(20000), BigDecimal.valueOf(5), OfferStatus.available, 91L),
+                new Offer(2L, 2L, BigDecimal.valueOf(10000), BigDecimal.valueOf(5), OfferStatus.available, 91L),
+                new Offer(3L, 3L, BigDecimal.valueOf(10000), BigDecimal.valueOf(5), OfferStatus.available, 91L),
+                new Offer(4L, 4L, BigDecimal.valueOf(10000), BigDecimal.valueOf(5), OfferStatus.available, 91L),
         });
-        req = new Request(0L, 0L, BigDecimal.valueOf(60000), "", 0);
+        req = new Request(0L, 0L, BigDecimal.valueOf(60000), "", RequestStatus.pending);
         solution = Arrays.asList(new Long[]{0L, 1L});
         testCaseHelper(data, req, solution);
 
         //Case 2: remainder min offers
         data = Arrays.asList(new Offer[] {
-                new Offer(0L, 0L, BigDecimal.valueOf(40000), BigDecimal.valueOf(5), 0, 91L),
-                new Offer(1L, 1L, BigDecimal.valueOf(20000), BigDecimal.valueOf(5), 0, 91L),
-                new Offer(2L, 2L, BigDecimal.valueOf(10000), BigDecimal.valueOf(5), 0, 91L),
-                new Offer(3L, 3L, BigDecimal.valueOf(10000), BigDecimal.valueOf(5), 0, 91L),
-                new Offer(4L, 4L, BigDecimal.valueOf(10000), BigDecimal.valueOf(5), 0, 91L),
+                new Offer(0L, 0L, BigDecimal.valueOf(40000), BigDecimal.valueOf(5), OfferStatus.available, 91L),
+                new Offer(1L, 1L, BigDecimal.valueOf(20000), BigDecimal.valueOf(5), OfferStatus.available, 91L),
+                new Offer(2L, 2L, BigDecimal.valueOf(10000), BigDecimal.valueOf(5), OfferStatus.available, 91L),
+                new Offer(3L, 3L, BigDecimal.valueOf(10000), BigDecimal.valueOf(5), OfferStatus.available, 91L),
+                new Offer(4L, 4L, BigDecimal.valueOf(10000), BigDecimal.valueOf(5), OfferStatus.available, 91L),
         });
-        req = new Request(0L, 0L, BigDecimal.valueOf(65000), "", 0);
+        req = new Request(0L, 0L, BigDecimal.valueOf(65000), "", RequestStatus.pending);
         solution = Arrays.asList(new Long[]{0L, 1L, 4L});
         testCaseHelper(data, req, solution);
 
         //Case 3: min percent
         data = Arrays.asList(new Offer[] {
-                new Offer(0L, 0L, BigDecimal.valueOf(20000), BigDecimal.valueOf(3), 0, 91L),
-                new Offer(1L, 1L, BigDecimal.valueOf(10000), BigDecimal.valueOf(3), 0, 91L),
-                new Offer(2L, 2L, BigDecimal.valueOf(10000), BigDecimal.valueOf(4), 0, 91L),
-                new Offer(3L, 3L, BigDecimal.valueOf(30000), BigDecimal.valueOf(5), 0, 91L),
-                new Offer(4L, 4L, BigDecimal.valueOf(10000), BigDecimal.valueOf(5), 0, 91L),
+                new Offer(0L, 0L, BigDecimal.valueOf(20000), BigDecimal.valueOf(3), OfferStatus.available, 91L),
+                new Offer(1L, 1L, BigDecimal.valueOf(10000), BigDecimal.valueOf(3), OfferStatus.available, 91L),
+                new Offer(2L, 2L, BigDecimal.valueOf(10000), BigDecimal.valueOf(4), OfferStatus.available, 91L),
+                new Offer(3L, 3L, BigDecimal.valueOf(30000), BigDecimal.valueOf(5), OfferStatus.available, 91L),
+                new Offer(4L, 4L, BigDecimal.valueOf(10000), BigDecimal.valueOf(5), OfferStatus.available, 91L),
         });
-        req = new Request(0L, 0L, BigDecimal.valueOf(50000), "", 0);
+        req = new Request(0L, 0L, BigDecimal.valueOf(50000), "", RequestStatus.pending);
         solution = Arrays.asList(new Long[]{0L, 1L, 2L, 4L});
         testCaseHelper(data, req, solution);
 
         //Case 4: min duration
         data = Arrays.asList(new Offer[] {
-                new Offer(0L, 0L, BigDecimal.valueOf(10000), BigDecimal.valueOf(5), 0, 30L),
-                new Offer(1L, 1L, BigDecimal.valueOf(10000), BigDecimal.valueOf(5), 0, 30L),
-                new Offer(2L, 2L, BigDecimal.valueOf(10000), BigDecimal.valueOf(5), 0, 61L),
-                new Offer(3L, 3L, BigDecimal.valueOf(20000), BigDecimal.valueOf(5), 0, 91L),
-                new Offer(4L, 4L, BigDecimal.valueOf(15000), BigDecimal.valueOf(5), 0, 91L),
+                new Offer(0L, 0L, BigDecimal.valueOf(10000), BigDecimal.valueOf(5), OfferStatus.available, 30L),
+                new Offer(1L, 1L, BigDecimal.valueOf(10000), BigDecimal.valueOf(5), OfferStatus.available, 30L),
+                new Offer(2L, 2L, BigDecimal.valueOf(10000), BigDecimal.valueOf(5), OfferStatus.available, 61L),
+                new Offer(3L, 3L, BigDecimal.valueOf(20000), BigDecimal.valueOf(5), OfferStatus.available, 91L),
+                new Offer(4L, 4L, BigDecimal.valueOf(15000), BigDecimal.valueOf(5), OfferStatus.available, 91L),
         });
-        req = new Request(0L, 0L, BigDecimal.valueOf(65000), "", 0);
+        req = new Request(0L, 0L, BigDecimal.valueOf(65000), "", RequestStatus.pending);
         solution = Arrays.asList(new Long[]{0L, 1L, 2L, 3L, 4L});
         testCaseHelper(data, req, solution);
 
         //Case 5: max duration
         data = Arrays.asList(new Offer[] {
-                new Offer(0L, 0L, BigDecimal.valueOf(10000), BigDecimal.valueOf(5), 0, 91L),
-                new Offer(1L, 1L, BigDecimal.valueOf(5000 ), BigDecimal.valueOf(5), 0, 91L),
-                new Offer(2L, 2L, BigDecimal.valueOf(10000), BigDecimal.valueOf(5), 0, 61L),
-                new Offer(3L, 3L, BigDecimal.valueOf(35000), BigDecimal.valueOf(5), 0, 30L),
-                new Offer(4L, 4L, BigDecimal.valueOf(10000), BigDecimal.valueOf(5), 0, 30L),
+                new Offer(0L, 0L, BigDecimal.valueOf(10000), BigDecimal.valueOf(5), OfferStatus.available, 91L),
+                new Offer(1L, 1L, BigDecimal.valueOf(5000 ), BigDecimal.valueOf(5), OfferStatus.available, 91L),
+                new Offer(2L, 2L, BigDecimal.valueOf(10000), BigDecimal.valueOf(5), OfferStatus.available, 61L),
+                new Offer(3L, 3L, BigDecimal.valueOf(35000), BigDecimal.valueOf(5), OfferStatus.available, 30L),
+                new Offer(4L, 4L, BigDecimal.valueOf(10000), BigDecimal.valueOf(5), OfferStatus.available, 30L),
         });
-        req = new Request(0L, 0L, BigDecimal.valueOf(65000), "", 0);
+        req = new Request(0L, 0L, BigDecimal.valueOf(65000), "", RequestStatus.pending);
         solution = Arrays.asList(new Long[]{0L, 1L, 2L, 3L, 4L});
         testCaseHelper(data, req, solution);
     }
@@ -87,7 +89,7 @@ class MatchLinearGreedyTest {
         List<Match> result = strategy.matchRequest(req, data).getMatches();
 
         for (int i = 0; i < result.size(); i++) {
-            assertEquals(solution.get(i), result.get(i).offer_id);
+            assertEquals(solution.get(i), result.get(i).getOffer().getOffer_id());
         }
     }
 }
