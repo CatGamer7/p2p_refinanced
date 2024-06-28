@@ -1,4 +1,4 @@
-package com.finance.service;
+package com.finance.service.interfaces;
 
 import com.finance.model.offer.Offer;
 
