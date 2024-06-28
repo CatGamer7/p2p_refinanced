@@ -17,8 +17,4 @@ public class RequestDTO {
     public Request toOffer() {
         return new Request(id, borrower_id, requested_amount, reason, status);
     }
-
-    static RequestDTO toDto(Request in) {
-
-    }
 }
