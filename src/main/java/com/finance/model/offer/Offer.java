@@ -40,5 +40,4 @@ public class Offer {
         status = in.getStatus();
         duration_days = in.getDuration_days();
     }
-
 }
