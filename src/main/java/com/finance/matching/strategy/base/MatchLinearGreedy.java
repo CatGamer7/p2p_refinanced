@@ -1,10 +1,10 @@
 package com.finance.matching.strategy.base;
 
-import com.finance.matching.Match;
-import com.finance.matching.MatchStatus;
-import com.finance.matching.Proposal;
-import com.finance.offer.Offer;
-import com.finance.request.Request;
+import com.finance.model.match.Match;
+import com.finance.model.match.MatchStatus;
+import com.finance.model.proposal.Proposal;
+import com.finance.model.offer.Offer;
+import com.finance.model.request.Request;
 
 import java.math.BigDecimal;
 import java.util.*;

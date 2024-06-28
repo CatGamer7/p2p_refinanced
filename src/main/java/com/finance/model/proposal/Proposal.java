@@ -1,15 +1,16 @@
-package com.finance.matching;
+package com.finance.model.proposal;
 
+import com.finance.model.match.Match;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @AllArgsConstructor
 @Table(name = "LoanProposal")
 public class Proposal {
@@ -18,7 +19,7 @@ public class Proposal {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long proposal_id;
 
-    @Column(name = "matches")
     @OneToMany
+    @ToString.Exclude
     private List<Match> matches;
 }

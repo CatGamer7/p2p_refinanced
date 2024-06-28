@@ -1,4 +1,4 @@
-package com.finance.request;
+package com.finance.model.request;
 
 public enum RequestStatus {
     pending, matched, approved

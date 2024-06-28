@@ -1,10 +1,10 @@
 package com.finance.matching.strategy.sorted;
 
-import com.finance.matching.Proposal;
+import com.finance.model.proposal.Proposal;
 import com.finance.matching.strategy.base.MatchLinearGreedy;
 import com.finance.matching.strategy.base.MatchStrategy;
-import com.finance.offer.Offer;
-import com.finance.request.Request;
+import com.finance.model.offer.Offer;
+import com.finance.model.request.Request;
 
 import java.util.List;
 

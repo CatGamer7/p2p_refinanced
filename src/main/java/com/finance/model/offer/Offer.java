@@ -1,4 +1,4 @@
-package com.finance.offer;
+package com.finance.model.offer;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -6,8 +6,10 @@ import lombok.*;
 import java.math.BigDecimal;
 
 @Entity
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @AllArgsConstructor
 @Table(name = "LoanOffers")
 public class Offer {
@@ -30,4 +32,12 @@ public class Offer {
 
     @Column(name = "duration_days")
     private Long duration_days;
+
+    public void setFields(Offer in) {
+        lender_id = in.getOffer_id();
+        amount = in.getAmount();
+        interest_rate = in.getInterest_rate();
+        status = in.getStatus();
+        duration_days = in.getDuration_days();
+    }
 }
