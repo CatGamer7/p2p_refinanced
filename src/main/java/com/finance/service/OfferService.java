@@ -2,6 +2,7 @@ package com.finance.service;
 
 import com.finance.model.offer.Offer;
 import com.finance.repository.OfferRepository;
+import com.finance.service.interfaces.OfferServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,5 @@ public class OfferService implements OfferServiceInterface {
     public Offer save(Offer offer) {
         return repository.save(offer);
     }
-
 
 }

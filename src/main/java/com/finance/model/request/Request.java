@@ -28,4 +28,11 @@ public class Request {
 
     @Column(name = "status")
     private RequestStatus status;
+
+    public void setFields(Request in) {
+        borrower_id = in.getBorrower_id();
+        requested_amount = in.getRequested_amount();
+        reason = in.getReason();
+        status = in.getStatus();
+    }
 }
