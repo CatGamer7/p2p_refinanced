@@ -1,17 +1,17 @@
-package com.finance.matching;
+package com.finance.model.match;
 
-import com.finance.offer.Offer;
-import com.finance.request.Request;
+import com.finance.model.offer.Offer;
+import com.finance.model.request.Request;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
 @Entity
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @AllArgsConstructor
 @Table(name = "LoanMatches")
 public class Match {
@@ -20,11 +20,9 @@ public class Match {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long match_id;
 
-    @Column(name = "request_id")
     @ManyToOne
     private Request request;
 
-    @Column(name = "offer_id")
     @ManyToOne
     private Offer offer;
 

@@ -1,10 +1,10 @@
 package com.finance.matching.strategy.base;
 
-import com.finance.matching.Match;
-import com.finance.offer.Offer;
-import com.finance.offer.OfferStatus;
-import com.finance.request.Request;
-import com.finance.request.RequestStatus;
+import com.finance.model.match.Match;
+import com.finance.model.offer.Offer;
+import com.finance.model.offer.OfferStatus;
+import com.finance.model.request.Request;
+import com.finance.model.request.RequestStatus;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;

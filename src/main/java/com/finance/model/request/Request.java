@@ -1,13 +1,14 @@
-package com.finance.request;
-
+package com.finance.model.request;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
 
 @Entity
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @AllArgsConstructor
 @Table(name = "LoanRequests")
 public class Request {
