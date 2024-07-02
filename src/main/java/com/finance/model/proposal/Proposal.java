@@ -12,14 +12,16 @@ import java.util.List;
 @ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
-@Table(name = "LoanProposal")
+@Table(name = "Loan_Proposal")
 public class Proposal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long proposal_id;
+    @Column(name = "pk_id")
+    private Long proposalId;
 
     @OneToMany
     @ToString.Exclude
+    @JoinColumn(name = "fk_match")
     private List<Match> matches;
 }

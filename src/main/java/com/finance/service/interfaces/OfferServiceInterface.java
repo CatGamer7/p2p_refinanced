@@ -9,4 +9,5 @@ public interface OfferServiceInterface {
     public List<Offer> list();
     public Optional<Offer> getOne(Long id);
     public Offer save(Offer offer);
+    public void delete(Long id);
 }

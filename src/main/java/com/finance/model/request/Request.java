@@ -10,18 +10,19 @@ import java.math.BigDecimal;
 @ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
-@Table(name = "LoanRequests")
+@Table(name = "Loan_Requests")
 public class Request {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long request_id;
+    @Column(name = "pk_id")
+    private Long requestId;
 
     @Column(name = "borrower_id")
-    private Long borrower_id;
+    private Long borrowerId;
 
     @Column(name = "requested_amount")
-    private BigDecimal requested_amount;
+    private BigDecimal requestedAmount;
 
     @Column(name = "reason")
     private String reason;
@@ -30,8 +31,8 @@ public class Request {
     private RequestStatus status;
 
     public void setFields(Request in) {
-        borrower_id = in.getBorrower_id();
-        requested_amount = in.getRequested_amount();
+        borrowerId = in.getBorrowerId();
+        requestedAmount = in.getRequestedAmount();
         reason = in.getReason();
         status = in.getStatus();
     }

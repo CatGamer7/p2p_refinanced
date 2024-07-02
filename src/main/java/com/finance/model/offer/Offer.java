@@ -11,33 +11,34 @@ import java.math.BigDecimal;
 @ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
-@Table(name = "LoanOffers")
+@Table(name = "Loan_Offers")
 public class Offer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long offer_id;
+    @Column(name = "pk_id")
+    private Long offerId;
 
     @Column(name = "lender_id")
-    private Long lender_id;
+    private Long lenderId;
 
     @Column(name = "amount")
     private BigDecimal amount;
 
     @Column(name = "interest_rate")
-    private BigDecimal interest_rate;
+    private BigDecimal interestRate;
 
     @Column(name = "status")
     private OfferStatus status;
 
     @Column(name = "duration_days")
-    private Long duration_days;
+    private Long durationDays;
 
     public void setFields(Offer in) {
-        lender_id = in.getOffer_id();
+        lenderId = in.getLenderId();
         amount = in.getAmount();
-        interest_rate = in.getInterest_rate();
+        interestRate = in.getInterestRate();
         status = in.getStatus();
-        duration_days = in.getDuration_days();
+        durationDays = in.getDurationDays();
     }
 }
