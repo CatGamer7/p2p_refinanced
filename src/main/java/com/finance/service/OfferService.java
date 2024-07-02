@@ -27,4 +27,9 @@ public class OfferService implements OfferServiceInterface {
         return repository.save(offer);
     }
 
+    @Override
+    public void delete(Long id) {
+        repository.deleteById(id);
+    }
+
 }

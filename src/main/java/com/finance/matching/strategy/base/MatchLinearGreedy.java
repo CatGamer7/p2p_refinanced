@@ -17,7 +17,7 @@ public class MatchLinearGreedy implements MatchStrategy{
 
         //Get the closest amount
         List<Integer> selected = new ArrayList<Integer>();
-        BigDecimal target = inRequest.getRequested_amount();
+        BigDecimal target = inRequest.getRequestedAmount();
         int smallestCandidate = data.size(); //Finish off remainder
         for (int i = 0; i < data.size(); i++) {
             BigDecimal curentAmount = data.get(i).getAmount();

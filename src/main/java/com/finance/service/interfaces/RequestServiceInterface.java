@@ -9,4 +9,5 @@ public interface RequestServiceInterface {
     public List<Request> list();
     public Optional<Request> getOne(Long id);
     public Request save(Request request);
+    public void delete(Long id);
 }

@@ -13,17 +13,20 @@ import java.math.BigDecimal;
 @ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
-@Table(name = "LoanMatches")
+@Table(name = "Loan_Matches")
 public class Match {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long match_id;
+    @Column(name = "pk_id")
+    private Long matchId;
 
     @ManyToOne
+    @JoinColumn(name = "fk_request")
     private Request request;
 
     @ManyToOne
+    @JoinColumn(name = "fk_offer")
     private Offer offer;
 
     @Column(name = "amount")
