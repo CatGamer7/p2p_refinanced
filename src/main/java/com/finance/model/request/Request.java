@@ -1,4 +1,5 @@
 package com.finance.model.request;
+import com.finance.model.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,8 +19,9 @@ public class Request {
     @Column(name = "pk_id")
     private Long requestId;
 
-    @Column(name = "borrower_id")
-    private Long borrowerId;
+    @ManyToOne
+    @JoinColumn(name = "fk_borrower_id")
+    private User borrower;
 
     @Column(name = "requested_amount")
     private BigDecimal requestedAmount;
@@ -31,7 +33,7 @@ public class Request {
     private RequestStatus status;
 
     public void setFields(Request in) {
-        borrowerId = in.getBorrowerId();
+        borrower = in.getBorrower();
         requestedAmount = in.getRequestedAmount();
         reason = in.getReason();
         status = in.getStatus();

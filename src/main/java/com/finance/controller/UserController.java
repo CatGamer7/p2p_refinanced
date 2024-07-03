@@ -1,7 +1,7 @@
 package com.finance.controller;
 
-import com.finance.dto.UserDTO;
-import com.finance.dto.UserFullDTO;
+import com.finance.dto.response.UserDTO;
+import com.finance.dto.request.UserFullDTO;
 import com.finance.model.user.User;
 import com.finance.service.UserService;
 import org.modelmapper.ModelMapper;
@@ -51,7 +51,7 @@ public class UserController {
     }
 
     @DeleteMapping("/user/{id}")
-    public ResponseEntity<UserDTO> delete(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         Optional<User> possibleUser = service.getOne(id);
 
         if (possibleUser.isPresent()) {

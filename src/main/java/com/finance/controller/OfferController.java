@@ -1,7 +1,8 @@
 package com.finance.controller;
 
+import com.finance.dto.response.OfferFullDTO;
 import com.finance.model.offer.Offer;
-import com.finance.dto.OfferDTO;
+import com.finance.dto.request.OfferDTO;
 import com.finance.service.OfferService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,23 +25,23 @@ public class OfferController {
     private ModelMapper modelMapper;
 
     @GetMapping("/offer")
-    public ResponseEntity<List<OfferDTO>> getAll() {
+    public ResponseEntity<List<OfferFullDTO>> getAll() {
         return new ResponseEntity<>(
                 service.list()
                         .stream()
-                        .map(offer -> modelMapper.map(offer, OfferDTO.class))
+                        .map(offer -> modelMapper.map(offer, OfferFullDTO.class))
                         .collect(Collectors.toList()),
                 HttpStatus.OK
         );
     }
 
     @GetMapping("/offer/{id}")
-    public ResponseEntity<OfferDTO> getOne(@PathVariable("id") Long id) {
+    public ResponseEntity<OfferFullDTO> getOne(@PathVariable("id") Long id) {
         Optional<Offer> possibleOffer = service.getOne(id);
 
         if (possibleOffer.isPresent()) {
             return new ResponseEntity<>(
-                    modelMapper.map(possibleOffer.get(), OfferDTO.class),
+                    modelMapper.map(possibleOffer.get(), OfferFullDTO.class),
                     HttpStatus.OK
             );
         }
@@ -50,7 +51,7 @@ public class OfferController {
     }
 
     @DeleteMapping("/offer/{id}")
-    public ResponseEntity<OfferDTO> delete(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         Optional<Offer> possibleOffer = service.getOne(id);
 
         if (possibleOffer.isPresent()) {
@@ -66,6 +67,7 @@ public class OfferController {
     @PutMapping("/offer")
     public ResponseEntity<OfferDTO> create(@RequestBody OfferDTO offerDto) {
         Offer newOffer = modelMapper.map(offerDto, Offer.class);
+        service.setUser(newOffer, offerDto.getLenderId());
 
         //If id was passed - try to retrieve
         if ((newOffer.getOfferId() != null)) {
