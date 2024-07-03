@@ -1,5 +1,6 @@
 package com.finance.model.offer;
 
+import com.finance.model.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,8 +20,9 @@ public class Offer {
     @Column(name = "pk_id")
     private Long offerId;
 
-    @Column(name = "lender_id")
-    private Long lenderId;
+    @ManyToOne
+    @JoinColumn(name = "fk_lender_id")
+    private User lender;
 
     @Column(name = "amount")
     private BigDecimal amount;
@@ -35,7 +37,7 @@ public class Offer {
     private Long durationDays;
 
     public void setFields(Offer in) {
-        lenderId = in.getLenderId();
+        lender = in.getLender();
         amount = in.getAmount();
         interestRate = in.getInterestRate();
         status = in.getStatus();

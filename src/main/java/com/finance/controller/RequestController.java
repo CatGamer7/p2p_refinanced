@@ -1,6 +1,7 @@
 package com.finance.controller;
 
-import com.finance.dto.RequestDTO;
+import com.finance.dto.request.RequestDTO;
+import com.finance.dto.response.RequestFullDTO;
 import com.finance.model.request.Request;
 import com.finance.service.RequestService;
 import org.modelmapper.ModelMapper;
@@ -24,23 +25,23 @@ public class RequestController {
     private ModelMapper modelMapper;
 
     @GetMapping("/request")
-    public ResponseEntity<List<RequestDTO>> getAll() {
+    public ResponseEntity<List<RequestFullDTO>> getAll() {
         return new ResponseEntity<>(
                 service.list()
                         .stream()
-                        .map(request -> modelMapper.map(request, RequestDTO.class))
+                        .map(request -> modelMapper.map(request, RequestFullDTO.class))
                         .collect(Collectors.toList()),
                 HttpStatus.OK
         );
     }
 
     @GetMapping("/request/{id}")
-    public ResponseEntity<RequestDTO> getOne(@PathVariable("id") Long id) {
+    public ResponseEntity<RequestFullDTO> getOne(@PathVariable("id") Long id) {
         Optional<Request> possibleRequest = service.getOne(id);
 
         if (possibleRequest.isPresent()) {
             return new ResponseEntity<>(
-                    modelMapper.map(possibleRequest.get(), RequestDTO.class),
+                    modelMapper.map(possibleRequest.get(), RequestFullDTO.class),
                     HttpStatus.OK
             );
         }
@@ -50,7 +51,7 @@ public class RequestController {
     }
 
     @DeleteMapping("/request/{id}")
-    public ResponseEntity<RequestDTO> delete(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         Optional<Request> possibleRequest = service.getOne(id);
 
         if (possibleRequest.isPresent()) {
@@ -66,6 +67,7 @@ public class RequestController {
     @PutMapping("/request")
     public ResponseEntity<RequestDTO> create(@RequestBody RequestDTO requestDto) {
         Request newRequest = modelMapper.map(requestDto, Request.class);
+        service.setUser(newRequest, requestDto.getBorrowerId());
 
         //If id was passed - try to retrieve
         if ((newRequest.getRequestId() != null)) {

@@ -1,5 +1,6 @@
 package com.finance.service.interfaces;
 
+import com.finance.model.offer.Offer;
 import com.finance.model.request.Request;
 
 import java.util.List;
@@ -10,4 +11,5 @@ public interface RequestServiceInterface {
     public Optional<Request> getOne(Long id);
     public Request save(Request request);
     public void delete(Long id);
+    public void setUser(Request request, Long userId);
 }

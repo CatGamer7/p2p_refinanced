@@ -1,4 +1,4 @@
-package com.finance.dto;
+package com.finance.dto.request;
 
 import lombok.Data;
 
