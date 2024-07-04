@@ -22,10 +22,6 @@ public class Match {
     private Long matchId;
 
     @ManyToOne
-    @JoinColumn(name = "fk_request")
-    private Request request;
-
-    @ManyToOne
     @JoinColumn(name = "fk_offer")
     private Offer offer;
 
