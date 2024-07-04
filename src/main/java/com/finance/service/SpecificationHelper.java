@@ -26,7 +26,7 @@ public class SpecificationHelper<T> {
         return specification;
     }
 
-    private Specification<T> filterToSpecification(FilterDTO filter) {
+    protected Specification<T> filterToSpecification(FilterDTO filter) {
         switch (filter.getOperator().toLowerCase()){
 
             case "=":
@@ -52,7 +52,7 @@ public class SpecificationHelper<T> {
         }
     }
 
-    private Object castToType(Class<?> fieldType, String value) {
+    protected Object castToType(Class<?> fieldType, String value) {
         if (fieldType == BigDecimal.class) {
             return new BigDecimal(value);
         }
@@ -73,7 +73,7 @@ public class SpecificationHelper<T> {
         }
     }
 
-    private Number castToNumber(Class<?> fieldType, String value) {
+    protected Number castToNumber(Class<?> fieldType, String value) {
         if (fieldType == BigDecimal.class) {
             return new BigDecimal(value);
         }

@@ -17,8 +17,8 @@ create table base_users (
 create table loan_matches (
     amount numeric(38,2),
     status smallint check (status between 0 and 1),
-    fk_match bigint,
     fk_offer bigint,
+    fk_proposal bigint,
     pk_id bigint not null,
     primary key (pk_id)
 );
@@ -27,7 +27,8 @@ create table loan_offers (
     amount numeric(38,2),
     interest_rate numeric(38,2),
     status smallint check (status between 0 and 3),
-    duration_days bigint, fk_lender_id bigint,
+    duration_days bigint,
+    fk_lender_id bigint,
     pk_id bigint not null,
     primary key (pk_id)
 );
@@ -48,7 +49,7 @@ create table loan_requests (
 );
 
 alter table if exists loan_matches add constraint FKg1lx9wehqg75feotypxgd02w3 foreign key (fk_offer) references loan_offers;
-alter table if exists loan_matches add constraint FKswvxxevsybqud9o0lp1tkmotw foreign key (fk_match) references loan_proposal;
+alter table if exists loan_matches add constraint FKofba9eaeds2prwcputxa3bq03 foreign key (fk_proposal) references loan_proposal;
 alter table if exists loan_offers add constraint FKer1ydkm5og16vw5m6rj9qy0fh foreign key (fk_lender_id) references base_users;
 alter table if exists loan_proposal add constraint FKln3gpjldxf102m66yvyuacmil foreign key (fk_request) references loan_requests;
 alter table if exists loan_requests add constraint FK5s1gx9s5k3wdh13h4pww9u5h8 foreign key (fk_borrower_id) references base_users;
