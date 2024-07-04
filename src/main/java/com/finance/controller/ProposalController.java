@@ -1,0 +1,76 @@
+package com.finance.controller;
+
+import com.finance.dto.request.FilterDTO;
+import com.finance.dto.request.ProposalStatusDTO;
+import com.finance.dto.response.ProposalFullDTO;
+import com.finance.model.proposal.Proposal;
+import com.finance.service.proposal.ProposalService;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/api")
+public class ProposalController {
+
+    @Autowired
+    private ProposalService service;
+
+    @Autowired
+    private ModelMapper modelMapper;
+
+    private int pageSize = 100;
+
+    @PostMapping("/proposal")
+    public ResponseEntity<Page<ProposalFullDTO>> filter(@RequestParam(value = "page", defaultValue = "0") int page,
+                                                        @RequestBody List<FilterDTO> filters) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+
+        return new ResponseEntity<>(
+                service.list(filters, pageable).map(
+                        proposal -> modelMapper.map(proposal, ProposalFullDTO.class)
+                ),
+                HttpStatus.OK
+        );
+    }
+
+    @DeleteMapping("/proposal/{id}")
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+        Optional<Proposal> possibleProposal = service.getOne(id);
+
+        if (possibleProposal.isPresent()) {
+            service.delete(id);
+
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PatchMapping("/proposal/{id}")
+    public ResponseEntity<ProposalFullDTO> update(@PathVariable("id") Long id,
+                                               @RequestBody ProposalStatusDTO proposalStatusDTO) {
+        Optional<Proposal> possibleProposal = service.getOne(id);
+
+        if (possibleProposal.isPresent()) {
+            Proposal p = possibleProposal.get();
+            p.setStatus(proposalStatusDTO.getStatus());
+            p = service.save(p);
+            ProposalFullDTO proposalDto = modelMapper.map(p, ProposalFullDTO.class);
+
+            return new ResponseEntity<>(proposalDto, HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+}

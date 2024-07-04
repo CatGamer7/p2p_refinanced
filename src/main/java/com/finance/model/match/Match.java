@@ -1,6 +1,7 @@
 package com.finance.model.match;
 
 import com.finance.model.offer.Offer;
+import com.finance.model.proposal.Proposal;
 import com.finance.model.request.Request;
 import jakarta.persistence.*;
 import lombok.*;
@@ -30,4 +31,8 @@ public class Match {
 
     @Column(name = "status")
     private MatchStatus status;
+
+    @ManyToOne
+    @JoinColumn(name = "fk_proposal")
+    private Proposal proposal;
 }

@@ -4,6 +4,7 @@ import com.finance.model.match.Match;
 import com.finance.model.match.MatchStatus;
 import com.finance.model.proposal.Proposal;
 import com.finance.model.offer.Offer;
+import com.finance.model.proposal.ProposalStatus;
 import com.finance.model.request.Request;
 
 import java.math.BigDecimal;
@@ -13,6 +14,7 @@ public class MatchLinearGreedy implements MatchStrategy{
 
     @Override
     public Proposal matchRequest(Request inRequest, List<Offer> data) {
+        Proposal out = new Proposal(null, inRequest, ProposalStatus.created, null);
         List<Match> matches = new ArrayList<Match>();
 
         //Get the closest amount
@@ -44,7 +46,8 @@ public class MatchLinearGreedy implements MatchStrategy{
                             null,
                             data.get(index),
                             data.get(index).getAmount(),
-                            MatchStatus.created
+                            MatchStatus.created,
+                            out
                     )
             );
         }
@@ -57,11 +60,14 @@ public class MatchLinearGreedy implements MatchStrategy{
                             null,
                             data.get(smallestCandidate),
                             target,
-                            MatchStatus.created
+                            MatchStatus.created,
+                            out
                     )
             );
         }
 
-        return new Proposal(null, inRequest, matches);
+        out.setMatches(matches);
+
+        return out;
     }
 }

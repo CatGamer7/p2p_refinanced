@@ -6,7 +6,7 @@ import com.finance.model.offer.Offer;
 import com.finance.model.offer.OfferStatus;
 import com.finance.model.proposal.Proposal;
 import com.finance.model.request.Request;
-import com.finance.service.ProposalService;
+import com.finance.service.proposal.ProposalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 
