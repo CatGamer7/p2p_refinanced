@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -28,7 +27,7 @@ public class OfferController {
     @Autowired
     private ModelMapper modelMapper;
 
-    private int pageSize = 2;
+    private int pageSize = 100;
 
     @GetMapping("/offer")
     public ResponseEntity<Page<OfferFullDTO>> getAll(@RequestParam(value = "page", defaultValue = "0") int page) {

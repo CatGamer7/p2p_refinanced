@@ -1,6 +1,6 @@
 package com.finance.controller;
 
-import com.finance.dto.response.RequestFullDTO;
+import com.finance.dto.request.FilterDTO;
 import com.finance.dto.response.UserDTO;
 import com.finance.dto.request.UserFullDTO;
 import com.finance.model.user.User;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -28,7 +27,7 @@ public class UserController {
     @Autowired
     private ModelMapper modelMapper;
 
-    private int pageSize = 2;
+    private int pageSize = 100;
 
     @GetMapping("/user")
     public ResponseEntity<Page<UserDTO>> getAll(@RequestParam(value = "page", defaultValue = "0") int page) {
@@ -69,6 +68,19 @@ public class UserController {
         else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @PostMapping("/user")
+    public ResponseEntity<Page<UserDTO>> filter(@RequestParam(value = "page", defaultValue = "0") int page,
+                                                       @RequestBody List<FilterDTO> filters) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+
+        return new ResponseEntity<>(
+                service.list(filters, pageable).map(
+                        offer -> modelMapper.map(offer, UserDTO.class)
+                ),
+                HttpStatus.OK
+        );
     }
 
     @PutMapping("/user")

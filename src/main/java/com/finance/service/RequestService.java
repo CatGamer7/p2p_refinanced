@@ -1,5 +1,6 @@
 package com.finance.service;
 
+import com.finance.dto.request.FilterDTO;
 import com.finance.model.request.Request;
 import com.finance.model.user.User;
 import com.finance.repository.RequestRepository;
@@ -8,6 +9,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,6 +24,9 @@ public class RequestService implements RequestServiceInterface {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private SpecificationHelper<Request> spec;
+
     @Override
     public List<Request> list() {
         return repository.findAll();
@@ -30,6 +35,12 @@ public class RequestService implements RequestServiceInterface {
     @Override
     public Page<Request> list(Pageable pageable) {
         return repository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Request> list(List<FilterDTO> filters, Pageable pageable) {
+        Specification<Request> specs = spec.applyFilters(filters);
+        return repository.findAll(specs, pageable);
     }
 
     @Override

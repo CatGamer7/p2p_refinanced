@@ -62,13 +62,15 @@ public class SpecificationHelper<T> {
         else if (fieldType == Long.class) {
             return Long.parseLong(value);
         }
+        else if (fieldType == Boolean.class) {
+            return Boolean.parseBoolean(value);
+        }
         else if (fieldType.isEnum()) {
             return Integer.parseInt(value);
         }
         else {
             throw new IllegalArgumentException("Column type conversion for " + fieldType + " not implemented");
         }
-
     }
 
     private Number castToNumber(Class<?> fieldType, String value) {
