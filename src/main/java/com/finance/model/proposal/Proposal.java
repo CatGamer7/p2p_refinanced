@@ -25,8 +25,10 @@ public class Proposal {
     @JoinColumn(name = "fk_request")
     private Request request;
 
-    @OneToMany
+    @Column(name = "status")
+    private ProposalStatus status;
+
+    @OneToMany(mappedBy = "proposal")
     @ToString.Exclude
-    @JoinColumn(name = "fk_proposal")
     private List<Match> matches;
 }

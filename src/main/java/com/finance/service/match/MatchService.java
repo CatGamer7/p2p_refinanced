@@ -2,8 +2,10 @@ package com.finance.service.match;
 
 import com.finance.dto.request.FilterDTO;
 import com.finance.model.match.Match;
+import com.finance.model.proposal.Proposal;
 import com.finance.repository.MatchRepository;
 import com.finance.service.interfaces.MatchServiceInterface;
+import com.finance.service.proposal.ProposalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +23,9 @@ public class MatchService implements MatchServiceInterface {
 
     @Autowired
     private MatchSpecification spec;
+
+    @Autowired
+    private ProposalService proposalService;
 
     @Override
     public Page<Match> list(List<FilterDTO> filters, Pageable pageable) {
@@ -40,6 +45,12 @@ public class MatchService implements MatchServiceInterface {
 
     @Override
     public void delete(Long id) {
-        repository.deleteById(id);
+        Optional<Match> optP = getOne(id);
+
+        if (optP.isEmpty()) {
+            return;
+        }
+        Proposal p = optP.get().getProposal();
+        proposalService.delete(p.getProposalId());
     }
 }
