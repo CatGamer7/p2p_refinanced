@@ -1,18 +1,21 @@
 package com.finance.controller;
 
+import com.finance.dto.request.FilterDTO;
 import com.finance.dto.request.RequestDTO;
 import com.finance.dto.response.RequestFullDTO;
 import com.finance.model.request.Request;
 import com.finance.service.RequestService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -24,13 +27,16 @@ public class RequestController {
     @Autowired
     private ModelMapper modelMapper;
 
+    private int pageSize = 100;
+
     @GetMapping("/request")
-    public ResponseEntity<List<RequestFullDTO>> getAll() {
+    public ResponseEntity<Page<RequestFullDTO>> getAll(@RequestParam(value = "page", defaultValue = "0") int page) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+
         return new ResponseEntity<>(
-                service.list()
-                        .stream()
-                        .map(request -> modelMapper.map(request, RequestFullDTO.class))
-                        .collect(Collectors.toList()),
+                service.list(pageable).map(
+                        request -> modelMapper.map(request, RequestFullDTO.class)
+                ),
                 HttpStatus.OK
         );
     }
@@ -48,6 +54,19 @@ public class RequestController {
         else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @PostMapping("/request")
+    public ResponseEntity<Page<RequestFullDTO>> filter(@RequestParam(value = "page", defaultValue = "0") int page,
+                                                     @RequestBody List<FilterDTO> filters) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+
+        return new ResponseEntity<>(
+                service.list(filters, pageable).map(
+                        offer -> modelMapper.map(offer, RequestFullDTO.class)
+                ),
+                HttpStatus.OK
+        );
     }
 
     @DeleteMapping("/request/{id}")
