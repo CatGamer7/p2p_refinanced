@@ -1,6 +1,7 @@
 package com.finance.model.proposal;
 
 import com.finance.model.match.Match;
+import com.finance.model.request.Request;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,6 +20,10 @@ public class Proposal {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "pk_id")
     private Long proposalId;
+
+    @ManyToOne
+    @JoinColumn(name = "fk_request")
+    private Request request;
 
     @OneToMany
     @ToString.Exclude

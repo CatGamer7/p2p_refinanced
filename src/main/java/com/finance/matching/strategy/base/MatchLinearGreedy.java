@@ -13,17 +13,17 @@ public class MatchLinearGreedy implements MatchStrategy{
 
     @Override
     public Proposal matchRequest(Request inRequest, List<Offer> data) {
-        List<Match> out = new ArrayList<Match>();
+        List<Match> matches = new ArrayList<Match>();
 
         //Get the closest amount
         List<Integer> selected = new ArrayList<Integer>();
         BigDecimal target = inRequest.getRequestedAmount();
         int smallestCandidate = data.size(); //Finish off remainder
         for (int i = 0; i < data.size(); i++) {
-            BigDecimal curentAmount = data.get(i).getAmount();
+            BigDecimal currentAmount = data.get(i).getAmount();
 
-            if (target.compareTo(curentAmount) >= 0) {
-                target = target.subtract(curentAmount);
+            if (target.compareTo(currentAmount) >= 0) {
+                target = target.subtract(currentAmount);
                 selected.add(i);
                 smallestCandidate = i + 1; //Prevent having selected i as candidate
 
@@ -39,11 +39,9 @@ public class MatchLinearGreedy implements MatchStrategy{
 
         for (int index : selected) {
             //Update offer status
-
-            out.add(
+            matches.add(
                     new Match(
-                            0L,
-                            inRequest,
+                            null,
                             data.get(index),
                             data.get(index).getAmount(),
                             MatchStatus.created
@@ -54,10 +52,9 @@ public class MatchLinearGreedy implements MatchStrategy{
         //Cover the leftover with the smallest candidate
         //Unless every offer was used up
         if (smallestCandidate < data.size()) {
-            out.add(
+            matches.add(
                     new Match(
-                            0L,
-                            inRequest,
+                            null,
                             data.get(smallestCandidate),
                             target,
                             MatchStatus.created
@@ -65,11 +62,6 @@ public class MatchLinearGreedy implements MatchStrategy{
             );
         }
 
-        //Save matches to db
-        for (Match m : out) {
-            //
-        }
-
-        return new Proposal(0L, out);
+        return new Proposal(null, inRequest, matches);
     }
 }

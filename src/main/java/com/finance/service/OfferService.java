@@ -9,6 +9,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +41,11 @@ public class OfferService implements OfferServiceInterface {
     public Page<Offer> list(List<FilterDTO> filters, Pageable pageable) {
         Specification<Offer> specs = spec.applyFilters(filters);
         return repository.findAll(specs, pageable);
+    }
+
+    @Override
+    public List<Offer> list(Specification<Offer> specification, List<Sort.Order> orders) {
+        return repository.findAll(specification, Sort.by(orders));
     }
 
     public Optional<Offer> getOne(Long id) {
