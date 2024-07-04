@@ -27,6 +27,6 @@ public class Proposal {
 
     @OneToMany
     @ToString.Exclude
-    @JoinColumn(name = "fk_match")
+    @JoinColumn(name = "fk_proposal")
     private List<Match> matches;
 }
