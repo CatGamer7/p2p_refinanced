@@ -4,6 +4,7 @@ import com.finance.model.request.RequestStatus;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Data
 public class RequestFullDTO {
@@ -12,4 +13,5 @@ public class RequestFullDTO {
     private BigDecimal requestedAmount;
     private String reason;
     private RequestStatus status;
+    private LocalDateTime createdTimestamp;
 }

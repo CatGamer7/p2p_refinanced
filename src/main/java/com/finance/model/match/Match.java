@@ -2,16 +2,16 @@ package com.finance.model.match;
 
 import com.finance.model.offer.Offer;
 import com.finance.model.proposal.Proposal;
-import com.finance.model.request.Request;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Table(name = "Loan_Matches")
@@ -32,7 +32,11 @@ public class Match {
     @Column(name = "status")
     private MatchStatus status;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "fk_proposal")
     private Proposal proposal;
+
+    @CreationTimestamp
+    @Column(name="created_timestamp")
+    private LocalDateTime createdTimestamp;
 }

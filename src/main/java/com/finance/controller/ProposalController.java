@@ -73,4 +73,5 @@ public class ProposalController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
 }

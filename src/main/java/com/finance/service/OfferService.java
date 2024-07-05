@@ -1,10 +1,12 @@
 package com.finance.service;
 
 import com.finance.dto.request.FilterDTO;
+import com.finance.model.match.Match;
 import com.finance.model.offer.Offer;
 import com.finance.model.user.User;
 import com.finance.repository.OfferRepository;
 import com.finance.service.interfaces.OfferServiceInterface;
+import com.finance.service.proposal.ProposalService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,6 +26,9 @@ public class OfferService implements OfferServiceInterface {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ProposalService proposalService;
 
     @Autowired
     private SpecificationHelper<Offer> spec;
@@ -59,6 +64,15 @@ public class OfferService implements OfferServiceInterface {
     @Override
     public void delete(Long id) {
         repository.deleteById(id);
+    }
+
+    @Override
+    public void delete(Offer offer) {
+        for (Match m : offer.getMatches()) {
+            proposalService.delete(m.getProposal().getProposalId());
+        }
+
+        repository.delete(offer);
     }
 
     @Override

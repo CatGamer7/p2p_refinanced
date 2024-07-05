@@ -49,7 +49,22 @@ public class ProposalService implements ProposalServiceInterface {
 
     @Override
     public Proposal save(Proposal proposal) {
-        return repository.save(proposal);
+        proposal = repository.save(proposal);
+
+        Request r = proposal.getRequest();
+        r.setStatus(RequestStatus.matched);
+        requestRepository.save(r);
+
+        List<Match> matches = proposal.getMatches();
+        for (Match m : matches) {
+            Offer o = m.getOffer();
+            o.setStatus(OfferStatus.matched);
+            o = offerRepository.save(o);
+
+            m = matchRepository.save(m);
+        }
+
+        return proposal;
     }
 
     @Override
@@ -66,12 +81,16 @@ public class ProposalService implements ProposalServiceInterface {
         requestRepository.save(r);
 
         List<Match> matches = p.getMatches();
+        p.setMatches(null);
+        p = repository.save(p);
         for (Match m : matches) {
             Offer o = m.getOffer();
             o.setStatus(OfferStatus.available);
             offerRepository.save(o);
 
-            matchRepository.delete(m);
+            m.setProposal(null);
+            m = matchRepository.save(m);
+            matchRepository.deleteById(m.getMatchId());
         }
 
         repository.delete(p);

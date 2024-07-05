@@ -1,17 +1,22 @@
 package com.finance.service;
 
 import com.finance.dto.request.FilterDTO;
+import com.finance.model.proposal.Proposal;
 import com.finance.model.request.Request;
+import com.finance.model.request.RequestStatus;
 import com.finance.model.user.User;
 import com.finance.repository.RequestRepository;
 import com.finance.service.interfaces.RequestServiceInterface;
+import com.finance.service.proposal.ProposalService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +30,22 @@ public class RequestService implements RequestServiceInterface {
     private UserService userService;
 
     @Autowired
+    private ProposalService proposalService;
+
+    @Autowired
     private SpecificationHelper<Request> spec;
+
+    public static List<Sort.Order> oldestFirst = Arrays.asList(new Sort.Order[] {
+            new Sort.Order(Sort.Direction.ASC, "createdTimestamp")
+    });
+
+    public Specification<Request> specificationAvailable() {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(
+                        root.get("status"),
+                        RequestStatus.pending
+                );
+    }
 
     @Override
     public List<Request> list() {
@@ -44,6 +64,11 @@ public class RequestService implements RequestServiceInterface {
     }
 
     @Override
+    public List<Request> list(Specification<Request> spec, List<Sort.Order> orders) {
+        return repository.findAll(spec, Sort.by(orders));
+    }
+
+    @Override
     public Optional<Request> getOne(Long id) {
         return repository.findById(id);
     }
@@ -56,6 +81,15 @@ public class RequestService implements RequestServiceInterface {
     @Override
     public void delete(Long id) {
         repository.deleteById(id);
+    }
+
+    @Override
+    public void delete(Request request) {
+        for (Proposal p : request.getProposals()) {
+            proposalService.delete(p.getProposalId());
+        }
+
+        repository.delete(request);
     }
 
     @Override

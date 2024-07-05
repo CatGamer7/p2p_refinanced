@@ -3,7 +3,11 @@ package com.finance.controller;
 import com.finance.dto.request.FilterDTO;
 import com.finance.dto.response.UserDTO;
 import com.finance.dto.request.UserFullDTO;
+import com.finance.model.offer.Offer;
+import com.finance.model.request.Request;
 import com.finance.model.user.User;
+import com.finance.service.OfferService;
+import com.finance.service.RequestService;
 import com.finance.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +27,12 @@ public class UserController {
 
     @Autowired
     private UserService service;
+
+    @Autowired
+    private OfferService offerService;
+
+    @Autowired
+    private RequestService requestService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -61,6 +71,16 @@ public class UserController {
         Optional<User> possibleUser = service.getOne(id);
 
         if (possibleUser.isPresent()) {
+            List<Offer> userOffers = possibleUser.get().getOffers();
+            List<Request> userRequest = possibleUser.get().getRequests();
+
+            for (Request r : userRequest) {
+                requestService.delete(r);
+            }
+            for (Offer o : userOffers) {
+                offerService.delete(o);
+            }
+
             service.delete(id);
 
             return new ResponseEntity<>(HttpStatus.OK);
