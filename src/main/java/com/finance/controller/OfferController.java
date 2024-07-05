@@ -5,6 +5,7 @@ import com.finance.dto.response.OfferFullDTO;
 import com.finance.model.offer.Offer;
 import com.finance.dto.request.OfferDTO;
 import com.finance.service.OfferService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +75,7 @@ public class OfferController {
         Optional<Offer> possibleOffer = service.getOne(id);
 
         if (possibleOffer.isPresent()) {
-            service.delete(id);
+            service.delete(possibleOffer.get());
 
             return new ResponseEntity<>(HttpStatus.OK);
         }
@@ -84,9 +85,15 @@ public class OfferController {
     }
 
     @PutMapping("/offer")
-    public ResponseEntity<OfferDTO> create(@RequestBody OfferDTO offerDto) {
+    public ResponseEntity create(@RequestBody OfferDTO offerDto) {
         Offer newOffer = modelMapper.map(offerDto, Offer.class);
-        service.setUser(newOffer, offerDto.getLenderId());
+
+        try {
+            service.setUser(newOffer, offerDto.getLenderId());
+        }
+        catch (EntityNotFoundException e) {
+            return new ResponseEntity<>("user not found", HttpStatus.NOT_FOUND);
+        }
 
         //If id was passed - try to retrieve
         if ((newOffer.getOfferId() != null)) {

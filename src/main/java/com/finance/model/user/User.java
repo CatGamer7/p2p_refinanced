@@ -1,12 +1,17 @@
 package com.finance.model.user;
 
+import com.finance.model.offer.Offer;
+import com.finance.model.request.Request;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Table(name = "Base_Users")
@@ -31,6 +36,16 @@ public class User {
 
     @Column(name = "is_active")
     private boolean active;
+
+    @CreationTimestamp
+    @Column(name="created_timestamp")
+    private LocalDateTime createdTimestamp;
+
+    @OneToMany(mappedBy = "borrower")
+    private List<Request> requests;
+
+    @OneToMany(mappedBy = "lender")
+    private List<Offer> offers;
 
     public void setFields(User in) {
         name = in.getName();

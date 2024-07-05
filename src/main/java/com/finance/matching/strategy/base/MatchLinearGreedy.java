@@ -14,13 +14,14 @@ public class MatchLinearGreedy implements MatchStrategy{
 
     @Override
     public Proposal matchRequest(Request inRequest, List<Offer> data) {
-        Proposal out = new Proposal(null, inRequest, ProposalStatus.created, null);
+        Proposal out = new Proposal(null, inRequest, ProposalStatus.created, null, null);
         List<Match> matches = new ArrayList<Match>();
 
         //Get the closest amount
         List<Integer> selected = new ArrayList<Integer>();
         BigDecimal target = inRequest.getRequestedAmount();
-        int smallestCandidate = data.size(); //Finish off remainder
+        Integer smallestCandidate = data.size(); //Finish off remainder
+        BigDecimal compareAmount = data.getFirst().getAmount(); //Largest
         for (int i = 0; i < data.size(); i++) {
             BigDecimal currentAmount = data.get(i).getAmount();
 
@@ -34,8 +35,9 @@ public class MatchLinearGreedy implements MatchStrategy{
                     break;
                 }
             }
-            else {
+            else if (compareAmount.compareTo(currentAmount) >= 0) {
                 smallestCandidate = i;
+                compareAmount = currentAmount;
             }
         }
 
@@ -47,7 +49,8 @@ public class MatchLinearGreedy implements MatchStrategy{
                             data.get(index),
                             data.get(index).getAmount(),
                             MatchStatus.created,
-                            out
+                            out,
+                            null
                     )
             );
         }
@@ -61,7 +64,8 @@ public class MatchLinearGreedy implements MatchStrategy{
                             data.get(smallestCandidate),
                             target,
                             MatchStatus.created,
-                            out
+                            out,
+                            null
                     )
             );
         }

@@ -4,13 +4,14 @@ import com.finance.model.match.Match;
 import com.finance.model.request.Request;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Table(name = "Loan_Proposal")
@@ -29,6 +30,9 @@ public class Proposal {
     private ProposalStatus status;
 
     @OneToMany(mappedBy = "proposal")
-    @ToString.Exclude
     private List<Match> matches;
+
+    @CreationTimestamp
+    @Column(name="created_timestamp")
+    private LocalDateTime createdTimestamp;
 }

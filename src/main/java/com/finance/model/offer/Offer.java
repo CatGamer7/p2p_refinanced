@@ -1,15 +1,18 @@
 package com.finance.model.offer;
 
+import com.finance.model.match.Match;
 import com.finance.model.user.User;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Table(name = "Loan_Offers")
@@ -35,6 +38,13 @@ public class Offer {
 
     @Column(name = "duration_days")
     private Long durationDays;
+
+    @CreationTimestamp
+    @Column(name="created_timestamp")
+    private LocalDateTime createdTimestamp;
+
+    @OneToMany(mappedBy = "offer")
+    private List<Match> matches;
 
     public void setFields(Offer in) {
         lender = in.getLender();

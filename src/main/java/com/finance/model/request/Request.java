@@ -1,14 +1,18 @@
 package com.finance.model.request;
+
+import com.finance.model.proposal.Proposal;
 import com.finance.model.user.User;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Table(name = "Loan_Requests")
@@ -31,6 +35,13 @@ public class Request {
 
     @Column(name = "status")
     private RequestStatus status;
+
+    @CreationTimestamp
+    @Column(name="created_timestamp")
+    private LocalDateTime createdTimestamp;
+
+    @OneToMany(mappedBy = "request")
+    private List<Proposal> proposals;
 
     public void setFields(Request in) {
         borrower = in.getBorrower();

@@ -9,19 +9,25 @@ import com.finance.model.request.Request;
 import com.finance.service.proposal.ProposalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-
+@Component
 public abstract class AbstractMatchStrategySort {
 
     @Autowired
     protected ProposalService service;
 
     public Proposal matchRequest(Request inRequest) {
-        MatchStrategy strat =getStrategy();
+        MatchStrategy strat = getStrategy();
         List<Offer> data = getData(inRequest);
+
+        if (data.isEmpty()) {
+            return null;
+        }
+
         Proposal prop = strat.matchRequest(inRequest, data);
         save(prop);
 
@@ -30,16 +36,10 @@ public abstract class AbstractMatchStrategySort {
 
     protected Specification<Offer> leTargetAndStatus(BigDecimal target) {
         return (root, query, criteriaBuilder) ->
-                criteriaBuilder.and(
-                        criteriaBuilder.equal(
-                                root.get("status"),
-                                OfferStatus.available
-                        ),
-                        criteriaBuilder.le(
-                                root.get("amount"),
-                                target
-                        )
-                );
+            criteriaBuilder.equal(
+                    root.get("status"),
+                    OfferStatus.available
+            );
     }
 
     protected MatchStrategy getStrategy() {

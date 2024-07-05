@@ -18,5 +18,6 @@ public interface OfferServiceInterface {
     public Optional<Offer> getOne(Long id);
     public Offer save(Offer offer);
     public void delete(Long id);
+    public void delete(Offer offer);
     public void setUser(Offer offer, Long userId);
 }

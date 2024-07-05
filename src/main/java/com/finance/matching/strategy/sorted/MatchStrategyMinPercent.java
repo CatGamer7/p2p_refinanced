@@ -8,12 +8,14 @@ import com.finance.service.OfferService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.springframework.data.jpa.domain.Specification.where;
 
+@Component
 public class MatchStrategyMinPercent extends AbstractMatchStrategySort {
 
     @Autowired
@@ -24,7 +26,8 @@ public class MatchStrategyMinPercent extends AbstractMatchStrategySort {
         Specification<Offer> spec = where(leTargetAndStatus(inRequest.getRequestedAmount()));
         List<Sort.Order> orders = Arrays.asList(new Sort.Order[] {
                 new Sort.Order(Sort.Direction.ASC, "interestRate"),
-                new Sort.Order(Sort.Direction.DESC, "amount")
+                new Sort.Order(Sort.Direction.DESC, "amount"),
+                new Sort.Order(Sort.Direction.ASC, "createdTimestamp")
         });
 
         return service.list(spec, orders);
