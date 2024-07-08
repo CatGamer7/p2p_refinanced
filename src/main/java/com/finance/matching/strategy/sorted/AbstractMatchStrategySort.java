@@ -42,9 +42,7 @@ public abstract class AbstractMatchStrategySort {
             );
     }
 
-    protected MatchStrategy getStrategy() {
-        return new MatchLinearGreedy();
-    }
+    protected abstract MatchStrategy getStrategy();
 
     protected abstract List<Offer> getData(Request inRequest);
 

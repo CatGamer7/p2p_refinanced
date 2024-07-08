@@ -10,7 +10,7 @@ import com.finance.model.request.Request;
 import java.math.BigDecimal;
 import java.util.*;
 
-public class MatchLinearGreedy implements MatchStrategy{
+public class MatchLinearGreedy implements MatchStrategy {
 
     @Override
     public Proposal matchRequest(Request inRequest, List<Offer> data) {
@@ -35,14 +35,13 @@ public class MatchLinearGreedy implements MatchStrategy{
                     break;
                 }
             }
-            else if (compareAmount.compareTo(currentAmount) >= 0) {
+            else if (compareAmount.compareTo(currentAmount) > 0) {
                 smallestCandidate = i;
                 compareAmount = currentAmount;
             }
         }
 
         for (int index : selected) {
-            //Update offer status
             matches.add(
                     new Match(
                             null,

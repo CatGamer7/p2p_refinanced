@@ -1,5 +1,6 @@
 package com.finance.matching.strategy.sorted;
 
+import com.finance.matching.strategy.offerBased.MinDurationLinearGreedy;
 import com.finance.model.proposal.Proposal;
 import com.finance.matching.strategy.base.MatchLinearGreedy;
 import com.finance.matching.strategy.base.MatchStrategy;
@@ -21,6 +22,11 @@ public class MatchStrategyMinDuration extends AbstractMatchStrategySort {
 
     @Autowired
     protected OfferService service;
+
+    @Override
+    protected MatchStrategy getStrategy() {
+        return new MinDurationLinearGreedy();
+    }
 
     @Override
     protected List<Offer> getData(Request inRequest) {
