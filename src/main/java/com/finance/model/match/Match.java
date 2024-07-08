@@ -38,5 +38,5 @@ public class Match {
 
     @CreationTimestamp
     @Column(name="created_timestamp")
-    private LocalDateTime createdTimestamp;
+    private LocalDateTime createdTimestamp = null;
 }

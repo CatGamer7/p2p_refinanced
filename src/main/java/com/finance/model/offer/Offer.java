@@ -41,10 +41,10 @@ public class Offer {
 
     @CreationTimestamp
     @Column(name="created_timestamp")
-    private LocalDateTime createdTimestamp;
+    private LocalDateTime createdTimestamp = null;
 
     @OneToMany(mappedBy = "offer")
-    private List<Match> matches;
+    private List<Match> matches = null;
 
     public void setFields(Offer in) {
         lender = in.getLender();

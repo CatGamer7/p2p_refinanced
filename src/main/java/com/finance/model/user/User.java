@@ -39,13 +39,13 @@ public class User {
 
     @CreationTimestamp
     @Column(name="created_timestamp")
-    private LocalDateTime createdTimestamp;
+    private LocalDateTime createdTimestamp = null;
 
     @OneToMany(mappedBy = "borrower")
-    private List<Request> requests;
+    private List<Request> requests = null;
 
     @OneToMany(mappedBy = "lender")
-    private List<Offer> offers;
+    private List<Offer> offers = null;
 
     public void setFields(User in) {
         name = in.getName();
