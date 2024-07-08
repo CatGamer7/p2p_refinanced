@@ -5,16 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProposalFullDTO {
+public class PrposalBriefDTO {
     private Long proposalId;
-    private RequestFullDTO request;
     private ProposalStatus status;
-    private List<MatchFullDTO> matches;
-    private LocalDateTime createdTimestamp;
 }
