@@ -49,7 +49,7 @@ public class User {
 
     public void setFields(User in) {
         name = in.getName();
-        email = in.getName();
+        email = in.getEmail();
         staff = in.isStaff();
         active = in.isActive();
     }
