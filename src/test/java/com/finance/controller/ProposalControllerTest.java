@@ -1,10 +1,21 @@
 package com.finance.controller;
 
 import com.finance.dto.request.FilterDTO;
+import com.finance.dto.request.OfferDTO;
+import com.finance.dto.request.ProposalCreateDTO;
 import com.finance.dto.request.ProposalStatusDTO;
+import com.finance.dto.response.MatchFullDTO;
+import com.finance.dto.response.OfferFullDTO;
 import com.finance.dto.response.ProposalFullDTO;
+import com.finance.dto.response.RequestFullDTO;
+import com.finance.model.match.MatchStatus;
+import com.finance.model.offer.OfferStatus;
 import com.finance.model.proposal.Proposal;
 import com.finance.model.proposal.ProposalStatus;
+import com.finance.model.request.Request;
+import com.finance.model.request.RequestStatus;
+import com.finance.service.OfferService;
+import com.finance.service.RequestService;
 import com.finance.service.proposal.ProposalService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +33,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -46,6 +58,12 @@ class ProposalControllerTest {
     @MockBean
     private ProposalService proposalService;
 
+    @MockBean
+    private OfferService offerService;
+
+    @MockBean
+    private RequestService requestService;
+
     @Autowired
     private JacksonTester<ProposalFullDTO> jsonProposal;
 
@@ -57,6 +75,9 @@ class ProposalControllerTest {
 
     @Autowired
     private JacksonTester<List<FilterDTO>> jsonFilter;
+
+    @Autowired
+    private JacksonTester<ProposalCreateDTO> jsonCreate;
 
     @Test
     void filter() throws Exception {
@@ -140,6 +161,53 @@ class ProposalControllerTest {
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.getContentAsString()).isEqualTo(
                 jsonProposal.write(updatedDTO).getJson()
+        );
+    }
+
+    @Test
+    void create() throws Exception {
+        Request r = new Request(0L, null, BigDecimal.valueOf(9000.00),
+                "reason", RequestStatus.pending, null, null);
+
+        given(requestService.getOne(0L))
+                .willReturn(Optional.of(r)
+                );
+
+        doAnswer(returnsFirstArg()).when(proposalService).save(any());
+        doAnswer(returnsFirstArg()).when(offerService).save(any());
+
+        ProposalCreateDTO createDTO = new ProposalCreateDTO(
+                new OfferDTO(null, null, BigDecimal.valueOf(9000.00),
+                        BigDecimal.valueOf(5), OfferStatus.available, 91L),
+                0L
+        );
+
+        String payload = jsonCreate.write(createDTO).getJson();
+
+        //Expect
+        RequestFullDTO rDto = new RequestFullDTO(0L, null, BigDecimal.valueOf(9000.00),
+                "reason", RequestStatus.pending, null);
+        OfferFullDTO oDto = new OfferFullDTO(null, null, BigDecimal.valueOf(9000.00),
+                BigDecimal.valueOf(5), OfferStatus.available, 91L, null);
+        MatchFullDTO mDto = new MatchFullDTO(null, oDto, BigDecimal.valueOf(9000.00),
+                MatchStatus.created, null, null);
+
+        ProposalFullDTO pDto = new ProposalFullDTO(null, rDto, ProposalStatus.created, Arrays.asList(mDto), null);
+        //
+
+        // when
+        MockHttpServletResponse response = mvc.perform(
+                put("/api/proposal")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(payload)
+                        .with(csrf())
+        ).andReturn().getResponse();
+
+        // then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.getContentAsString()).isEqualTo(
+                jsonProposal.write(pDto).getJson()
         );
     }
 }
