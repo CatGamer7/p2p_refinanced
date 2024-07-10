@@ -20,6 +20,7 @@ import static com.finance.service.RequestService.oldestFirst;
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api")
 public class RequestController {
@@ -31,7 +32,7 @@ public class RequestController {
     private ModelMapper modelMapper;
 
     @Autowired
-    MatchStrategyMinOffers strat = new MatchStrategyMinOffers();
+    private MatchStrategyMinOffers strat = new MatchStrategyMinOffers();
 
     private int pageSize = 100;
 

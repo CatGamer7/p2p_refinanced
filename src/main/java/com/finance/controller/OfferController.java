@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api")
 public class OfferController {
@@ -28,7 +29,7 @@ public class OfferController {
     @Autowired
     private ModelMapper modelMapper;
 
-    private int pageSize = 100;
+    private int pageSize = 2;
 
     @GetMapping("/offer")
     public ResponseEntity<Page<OfferFullDTO>> getAll(@RequestParam(value = "page", defaultValue = "0") int page) {
