@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -61,7 +63,6 @@ class RequestControllerTest {
 
     @Test
     void getAll() throws Exception {
-        Pageable pageable = PageRequest.of(0, 100);
         Page<Request> page = new PageImpl<>(
                 Arrays.asList(new Request[] {new Request(0L, null, BigDecimal.valueOf(9000.00),
                         "reason", RequestStatus.pending, null, null) } )
@@ -71,7 +72,7 @@ class RequestControllerTest {
                         BigDecimal.valueOf(9000.00),"reason", RequestStatus.pending, null) } )
         );
 
-        given(requestService.list(pageable))
+        given(requestService.list(any()))
                 .willReturn(page);
 
         // when
@@ -110,7 +111,6 @@ class RequestControllerTest {
 
     @Test
     void filter() throws Exception {
-        Pageable pageable = PageRequest.of(0, 100);
         Page<Request> page = new PageImpl<>(
                 Arrays.asList(new Request[] {new Request(0L, null, BigDecimal.valueOf(9000.00),
                         "reason", RequestStatus.pending, null, null) } )
@@ -124,7 +124,7 @@ class RequestControllerTest {
 
         String payload = jsonFilter.write(filters).getJson();
 
-        given(requestService.list(filters, pageable))
+        given(requestService.list(eq(filters), any()))
                 .willReturn(page);
 
         // when

@@ -32,6 +32,7 @@ import java.util.Optional;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doAnswer;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -62,7 +63,6 @@ class MatchControllerTest {
 
     @Test
     void filter() throws Exception {
-        Pageable pageable = PageRequest.of(0, 100);
         Page<Match> page = new PageImpl<>(
                 Arrays.asList(new Match[] {new Match(0L, null, BigDecimal.valueOf(9000.00),
                         MatchStatus.created, null, null) } )
@@ -76,7 +76,7 @@ class MatchControllerTest {
 
         String payload = jsonFilter.write(filters).getJson();
 
-        given(matchService.list(filters, pageable))
+        given(matchService.list(eq(filters), any()))
                 .willReturn(page);
 
         // when

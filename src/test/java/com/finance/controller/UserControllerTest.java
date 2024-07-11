@@ -25,6 +25,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -70,7 +72,7 @@ class UserControllerTest {
                         true, true, null) } )
         );
 
-        given(userService.list(pageable))
+        given(userService.list(any()))
                 .willReturn(page);
 
         // when
@@ -141,7 +143,7 @@ class UserControllerTest {
 
         String payload = jsonFilter.write(filters).getJson();
 
-        given(userService.list(filters, pageable))
+        given(userService.list(eq(filters), any()))
                 .willReturn(page);
 
         // when

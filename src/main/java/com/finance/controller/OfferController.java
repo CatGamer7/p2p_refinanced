@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +34,8 @@ public class OfferController {
 
     @GetMapping("/offer")
     public ResponseEntity<Page<OfferFullDTO>> getAll(@RequestParam(value = "page", defaultValue = "0") int page) {
-        Pageable pageable = PageRequest.of(page, pageSize);
+        Pageable pageable = PageRequest.of(page, pageSize,
+                Sort.by(new Sort.Order(Sort.Direction.DESC, "createdTimestamp")));
 
         return new ResponseEntity<>(
                 service.list(pageable).map(
@@ -61,7 +63,8 @@ public class OfferController {
     @PostMapping("/offer")
     public ResponseEntity<Page<OfferFullDTO>> filter(@RequestParam(value = "page", defaultValue = "0") int page,
                                                      @RequestBody List<FilterDTO> filters) {
-        Pageable pageable = PageRequest.of(page, pageSize);
+        Pageable pageable = PageRequest.of(page, pageSize,
+                Sort.by(new Sort.Order(Sort.Direction.DESC, "createdTimestamp")));
 
         return new ResponseEntity<>(
                 service.list(filters, pageable).map(

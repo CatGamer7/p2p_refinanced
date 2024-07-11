@@ -65,8 +65,11 @@ public class SpecificationHelper<T> {
         else if (fieldType == Boolean.class) {
             return Boolean.parseBoolean(value);
         }
-        else if (fieldType.isEnum()) {
+        else if (fieldType.isEnum() && isNumeric(value)) {
             return Integer.parseInt(value);
+        }
+        else if (fieldType.isEnum()) {
+            return getEnumValue(fieldType, value);
         }
         else {
             throw new IllegalArgumentException("Column type conversion for " + fieldType + " not implemented");
@@ -88,4 +91,12 @@ public class SpecificationHelper<T> {
         }
     }
 
+    protected static <E extends Enum<E>> E getEnumValue(Class<?> c, String value)
+    {
+        return Enum.valueOf((Class<E>)c, value);
+    }
+
+    protected static boolean isNumeric(String str) {
+        return str.matches("\\d+");
+    }
 }

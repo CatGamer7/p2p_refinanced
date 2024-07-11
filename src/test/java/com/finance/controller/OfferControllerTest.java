@@ -12,10 +12,7 @@ import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -28,6 +25,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -57,7 +56,6 @@ class OfferControllerTest {
 
     @Test
     void getAll() throws Exception {
-        Pageable pageable = PageRequest.of(0, 100);
         Page<Offer> page = new PageImpl<>(
                 Arrays.asList(new Offer[] {new Offer(0L, null, BigDecimal.valueOf(90000.00),
                         BigDecimal.valueOf(5), OfferStatus.available, 91L,
@@ -68,7 +66,7 @@ class OfferControllerTest {
                         BigDecimal.valueOf(5), OfferStatus.available, 91L, null) } )
         );
 
-        given(offerService.list(pageable))
+        given(offerService.list(any()))
                 .willReturn(page);
 
         // when
@@ -107,7 +105,6 @@ class OfferControllerTest {
 
     @Test
     void filter() throws Exception {
-        Pageable pageable = PageRequest.of(0, 100);
         Page<Offer> page = new PageImpl<>(
                 Arrays.asList(new Offer[] {new Offer(0L, null, BigDecimal.valueOf(90000.00),
                         BigDecimal.valueOf(5), OfferStatus.available, 91L,
@@ -122,7 +119,7 @@ class OfferControllerTest {
 
         String payload = jsonFilter.write(filters).getJson();
 
-        given(offerService.list(filters, pageable))
+        given(offerService.list(eq(filters), any()))
                 .willReturn(page);
 
         // when
