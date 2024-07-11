@@ -65,7 +65,12 @@ public class ProposalController {
         Optional<Proposal> possibleProposal = service.getOne(id);
 
         if (possibleProposal.isPresent()) {
-            service.delete(id);
+            try {
+                service.delete(id);
+            }
+            catch (Exception e) {
+                int a = 1;
+            }
 
             return new ResponseEntity<>(HttpStatus.OK);
         }
