@@ -11,4 +11,5 @@ import lombok.NoArgsConstructor;
 public class PrposalBriefDTO {
     private Long proposalId;
     private ProposalStatus status;
+    private RequestFullDTO request;
 }
