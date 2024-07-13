@@ -103,11 +103,13 @@ public class ProposalController {
 
         if (rOptional.isPresent()) {
             Offer o = modelMapper.map(proposalCreateDTO.getOffer(), Offer.class);
+            offerService.setUser(o, proposalCreateDTO.getOffer().getLenderId());
             o = offerService.save(o);
 
-            Proposal p = null;
-            Match m = new Match(null, o, o.getAmount(), MatchStatus.created, p, null);
-            p = new Proposal(null, rOptional.get(), ProposalStatus.created, Arrays.asList(m), null);
+            Match m = new Match(null, o, o.getAmount(), MatchStatus.created, null, null);
+            Proposal p = new Proposal(null, rOptional.get(), ProposalStatus.created,
+                    Arrays.asList(m), null);
+            m.setProposal(p);
 
             p = service.save(p);
             ProposalFullDTO pDto = modelMapper.map(p, ProposalFullDTO.class);
