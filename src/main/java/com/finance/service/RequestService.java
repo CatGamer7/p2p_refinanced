@@ -39,7 +39,7 @@ public class RequestService implements RequestServiceInterface {
             new Sort.Order(Sort.Direction.ASC, "createdTimestamp")
     });
 
-    public Specification<Request> specificationAvailable() {
+    public static Specification<Request> specificationAvailable() {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(
                         root.get("status"),

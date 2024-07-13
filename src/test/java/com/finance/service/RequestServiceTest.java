@@ -26,18 +26,21 @@ class RequestServiceTest {
     @Autowired
     private RequestService service;
 
-    @MockBean
+    @Autowired
     private UserService userService;
 
     @Test
     void filter() {
+        User u = userService.save(new User(null, "name", "email", "digest", false,
+                true, null, null, null));
+
         Request r1 = service.save(
-                new Request(null, null, BigDecimal.valueOf(9000.00), "reason",
+                new Request(null, u, BigDecimal.valueOf(9000.00), "reason",
                         RequestStatus.pending, null, null)
         );
 
         Request r2 = service.save(
-                new Request(null, null, BigDecimal.valueOf(8000.00), "reason 2",
+                new Request(null, u, BigDecimal.valueOf(8000.00), "reason 2",
                         RequestStatus.matched, null, null)
         );
 
@@ -57,13 +60,18 @@ class RequestServiceTest {
 
         service.delete(r1.getRequestId());
         service.delete(r2.getRequestId());
+
+        userService.delete(u.getUserId());
     }
 
     @Test
     @Transactional
     void delete() {
+        User u = userService.save(new User(null, "name", "setuser@email", "digest", false,
+                true, null, null, null));
+
         Request r1 = service.save(
-                new Request(null, null, BigDecimal.valueOf(9000.00), "reason",
+                new Request(null, u, BigDecimal.valueOf(9000.00), "reason",
                         RequestStatus.pending, null, Arrays.asList())
         );
 
@@ -73,27 +81,27 @@ class RequestServiceTest {
         assertEquals(r1.getProposals().size(), r2.getProposals().size());
 
         service.delete(r1);
+        userService.delete(u.getUserId());
     }
 
     @Test
     void setUser() {
+        User u = userService.save(new User(null, "name", "setuser@email", "digest", false,
+                true, null, null, null));
+
         Request r1 = service.save(
-                new Request(null, null, BigDecimal.valueOf(9000.00), "reason",
+                new Request(null, u, BigDecimal.valueOf(9000.00), "reason",
                         RequestStatus.pending, null, Arrays.asList())
         );
 
-        User u = new User(0L, "name", "email", "password_digest",
-                true, true, null, new ArrayList<Request>(), new ArrayList<Offer>());
-
-        given(userService.getOne(0L))
-                .willReturn(Optional.of(u)
-                );
-
-        service.setUser(r1, 0L);
+        service.setUser(r1, u.getUserId());
 
         assertEquals(r1.getBorrower().getUserId(), u.getUserId());
         assertEquals(r1.getBorrower().getName(), u.getName());
         assertEquals(r1.getBorrower().getEmail(), u.getEmail());
         assertEquals(r1.getBorrower().isStaff(), u.isStaff());
+
+        service.delete(r1.getRequestId());
+        userService.delete(u.getUserId());
     }
 }

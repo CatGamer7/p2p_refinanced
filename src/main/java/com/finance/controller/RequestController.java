@@ -15,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import static com.finance.service.RequestService.oldestFirst;
 
@@ -24,6 +26,7 @@ import java.util.Optional;
 @CrossOrigin
 @RestController
 @RequestMapping("/api")
+@EnableScheduling
 public class RequestController {
 
     @Autowired
@@ -128,12 +131,17 @@ public class RequestController {
 
     @PostMapping("/request/test-run")
     public ResponseEntity<Void> testRun() {
-        List<Request> requests = service.list(service.specificationAvailable(), oldestFirst);
+        runStrategy();
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Scheduled(fixedDelay = 10000)
+    private void runStrategy() {
+        List<Request> requests = service.list(RequestService.specificationAvailable(), oldestFirst);
 
         for (Request r : requests) {
             strat.matchRequest(r);
         }
-
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -23,10 +23,10 @@ public class Proposal {
     private Long proposalId;
 
     @ManyToOne
-    @JoinColumn(name = "fk_request")
+    @JoinColumn(name = "fk_request", nullable = false)
     private Request request;
 
-    @Column(name = "status")
+    @Column(name = "status", nullable = false)
     private ProposalStatus status;
 
     @OneToMany(mappedBy = "proposal")

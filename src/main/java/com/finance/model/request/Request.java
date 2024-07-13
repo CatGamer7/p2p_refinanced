@@ -3,6 +3,9 @@ package com.finance.model.request;
 import com.finance.model.proposal.Proposal;
 import com.finance.model.user.User;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -24,17 +27,19 @@ public class Request {
     private Long requestId;
 
     @ManyToOne
-    @JoinColumn(name = "fk_borrower_id")
+    @JoinColumn(name = "fk_borrower_id", nullable = false)
     private User borrower;
 
-    @Column(name = "requested_amount")
+    @Column(name = "requested_amount", nullable = false)
+    @DecimalMin(value = "0.01", message = "Requested amount must be positive")
     private BigDecimal requestedAmount;
 
     @Column(name = "reason")
+    @NotBlank(message = "Must give a reason for loan")
     private String reason;
 
-    @Column(name = "status")
-    private RequestStatus status;
+    @Column(name = "status", nullable = false)
+    private RequestStatus status = RequestStatus.pending;
 
     @CreationTimestamp
     @Column(name="created_timestamp")

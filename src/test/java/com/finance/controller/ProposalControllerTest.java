@@ -4,10 +4,7 @@ import com.finance.dto.request.FilterDTO;
 import com.finance.dto.request.OfferDTO;
 import com.finance.dto.request.ProposalCreateDTO;
 import com.finance.dto.request.ProposalStatusDTO;
-import com.finance.dto.response.MatchFullDTO;
-import com.finance.dto.response.OfferFullDTO;
-import com.finance.dto.response.ProposalFullDTO;
-import com.finance.dto.response.RequestFullDTO;
+import com.finance.dto.response.*;
 import com.finance.model.match.MatchStatus;
 import com.finance.model.offer.OfferStatus;
 import com.finance.model.proposal.Proposal;
@@ -189,8 +186,9 @@ class ProposalControllerTest {
                 "reason", RequestStatus.pending, null);
         OfferFullDTO oDto = new OfferFullDTO(null, null, BigDecimal.valueOf(9000.00),
                 BigDecimal.valueOf(5), OfferStatus.available, 91L, null);
+        PrposalBriefDTO pbDto = new PrposalBriefDTO(null, ProposalStatus.created, rDto);
         MatchFullDTO mDto = new MatchFullDTO(null, oDto, BigDecimal.valueOf(9000.00),
-                MatchStatus.created, null, null);
+                MatchStatus.created, null, pbDto);
 
         ProposalFullDTO pDto = new ProposalFullDTO(null, rDto, ProposalStatus.created, Arrays.asList(mDto), null);
         //

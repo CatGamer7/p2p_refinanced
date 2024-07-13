@@ -9,8 +9,10 @@ import com.finance.model.proposal.Proposal;
 import com.finance.model.proposal.ProposalStatus;
 import com.finance.model.request.Request;
 import com.finance.model.request.RequestStatus;
+import com.finance.model.user.User;
 import com.finance.service.OfferService;
 import com.finance.service.RequestService;
+import com.finance.service.UserService;
 import com.finance.service.proposal.ProposalService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +32,8 @@ class MatchServiceTest {
     @Autowired
     private MatchService service;
 
-    @Autowired ProposalService proposalService;
+    @Autowired
+    private ProposalService proposalService;
 
     @Autowired
     private RequestService requestService;
@@ -38,18 +41,26 @@ class MatchServiceTest {
     @Autowired
     private OfferService offerService;
 
+    @Autowired
+    private UserService userService;
+
     @Test
     @Transactional
     void list() {
-        Request r1 = new Request(null, null, BigDecimal.valueOf(9000.00), "reason",
+        User u1 = userService.save(
+                new User(null, "name", "email 1", "digest",
+                        true, true,null, null, null)
+        );
+
+        Request r1 = new Request(null, u1, BigDecimal.valueOf(9000.00), "reason",
                 RequestStatus.pending, null, null);
 
         r1 = requestService.save(r1);
 
-        Offer o1 = new Offer(null, null, BigDecimal.valueOf(9000.00), BigDecimal.valueOf(5),
+        Offer o1 = new Offer(null, u1, BigDecimal.valueOf(9000.00), BigDecimal.valueOf(5),
                 OfferStatus.available, 30L, null, null);
 
-        Offer o2 = new Offer(null, null, BigDecimal.valueOf(8000.00), BigDecimal.valueOf(5),
+        Offer o2 = new Offer(null, u1, BigDecimal.valueOf(8000.00), BigDecimal.valueOf(5),
                 OfferStatus.available, 60L, null, null);
 
         o1 = offerService.save(o1);
@@ -105,5 +116,7 @@ class MatchServiceTest {
         assertEquals(o2.getStatus(), OfferStatus.available);
         assertEquals(r1.getStatus(), RequestStatus.pending);
         //
+
+        userService.delete(u1.getUserId());
     }
 }

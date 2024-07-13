@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,14 +24,18 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@EnableScheduling
 public class ProposalService implements ProposalServiceInterface {
 
     @Autowired
     private ProposalRepository repository;
+
     @Autowired
     private MatchRepository matchRepository;
+
     @Autowired
     private OfferRepository offerRepository;
+
     @Autowired
     private RequestRepository requestRepository;
 

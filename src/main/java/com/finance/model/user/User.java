@@ -3,6 +3,7 @@ package com.finance.model.user;
 import com.finance.model.offer.Offer;
 import com.finance.model.request.Request;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -23,19 +24,22 @@ public class User {
     private Long userId;
 
     @Column(name = "name")
+    @NotBlank(message = "Must provide a name for user")
     private String name;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
+    @NotBlank(message = "Must provide unique email for user")
     private String email;
 
     @Column(name = "password_digest")
+    @NotBlank(message = "Must provide a password for user")
     private String passwordDigest;
 
     @Column(name = "is_staff")
-    private boolean staff;
+    private boolean staff = false;
 
     @Column(name = "is_active")
-    private boolean active;
+    private boolean active = true;
 
     @CreationTimestamp
     @Column(name="created_timestamp")

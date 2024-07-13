@@ -20,7 +20,7 @@ class UserServiceTest {
     @Test
     void filter() {
         User u1 = service.save(
-                new User(null, "name", "email", "digest",
+                new User(null, "name", "email 1", "digest",
                         true, true,null, null, null)
         );
         User u2 = service.save(

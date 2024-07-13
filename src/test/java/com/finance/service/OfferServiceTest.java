@@ -26,18 +26,21 @@ class OfferServiceTest {
     @Autowired
     private OfferService service;
 
-    @MockBean
+    @Autowired
     private UserService userService;
 
     @Test
     void filter() {
+        User u = userService.save(new User(null, "name", "filter@email", "digest", false,
+                true, null, null, null));
+
         Offer o1 = service.save(
-                new Offer(null, null, BigDecimal.valueOf(9000.00), BigDecimal.valueOf(5),
+                new Offer(null, u, BigDecimal.valueOf(9000.00), BigDecimal.valueOf(5),
                         OfferStatus.available, 30L, null, null)
         );
 
         Offer o2 = service.save(
-                new Offer(null, null, BigDecimal.valueOf(8000.00), BigDecimal.valueOf(4),
+                new Offer(null, u, BigDecimal.valueOf(8000.00), BigDecimal.valueOf(4),
                         OfferStatus.matched, 60L, null, null)
         );
 
@@ -57,12 +60,17 @@ class OfferServiceTest {
 
         service.delete(o1.getOfferId());
         service.delete(o2.getOfferId());
+
+        userService.delete(u.getUserId());
     }
 
     @Test
     @Transactional
     void delete() {
-        Offer o1 = new Offer(null, null, BigDecimal.valueOf(9000.00), BigDecimal.valueOf(5),
+        User u = userService.save(new User(null, "name", "email", "digest", false,
+                true, null, null, null));
+
+        Offer o1 = new Offer(null, u, BigDecimal.valueOf(9000.00), BigDecimal.valueOf(5),
                 OfferStatus.available, 30L, null, Arrays.asList());
 
         o1 = service.save(o1);
@@ -70,7 +78,8 @@ class OfferServiceTest {
 
         assertEquals(o1.getMatches().size(), o2.getMatches().size());
 
-        service.delete(o1);
+        service.delete(o1.getOfferId());
+        userService.delete(u.getUserId());
     }
 
     @Test
@@ -78,18 +87,16 @@ class OfferServiceTest {
         Offer o1 = new Offer(null, null, BigDecimal.valueOf(9000.00), BigDecimal.valueOf(5),
                 OfferStatus.available, 30L, null, Arrays.asList());
 
-        User u = new User(0L, "name", "email", "password_digest",
-                true, true, null, new ArrayList<Request>(), new ArrayList<Offer>());
+        User u = userService.save(new User(null, "name", "mail", "password_digest",
+                true, true, null, new ArrayList<Request>(), new ArrayList<Offer>()));
 
-        given(userService.getOne(0L))
-                .willReturn(Optional.of(u)
-                );
-
-        service.setUser(o1, 0L);
+        service.setUser(o1, u.getUserId());
 
         assertEquals(o1.getLender().getUserId(), u.getUserId());
         assertEquals(o1.getLender().getName(), u.getName());
         assertEquals(o1.getLender().getEmail(), u.getEmail());
         assertEquals(o1.getLender().isStaff(), u.isStaff());
+
+        userService.delete(u.getUserId());
     }
 }
