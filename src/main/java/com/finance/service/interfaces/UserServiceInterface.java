@@ -14,5 +14,6 @@ public interface UserServiceInterface {
     public Page<User> list(List<FilterDTO> filters, Pageable pageable);
     public Optional<User> getOne(Long id);
     public User save(User user);
+    public User register(User user);
     public void delete(Long id);
 }

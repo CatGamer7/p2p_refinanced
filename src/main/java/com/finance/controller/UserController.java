@@ -127,7 +127,7 @@ public class UserController {
         }
 
         //Else - create
-        newUser = service.save(newUser);
+        newUser = service.register(newUser);
         UserDTO response = modelMapper.map(newUser, UserDTO.class);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
