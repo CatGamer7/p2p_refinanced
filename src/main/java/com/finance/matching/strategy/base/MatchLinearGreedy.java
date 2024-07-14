@@ -35,7 +35,8 @@ public class MatchLinearGreedy implements MatchStrategy {
                     break;
                 }
             }
-            else if (compareAmount.compareTo(currentAmount) > 0) {
+            else if ((compareAmount.compareTo(currentAmount) > 0)
+                    || (smallestCandidate == data.size())) { //Edge case when smallestCandidate is not selected
                 smallestCandidate = i;
                 compareAmount = currentAmount;
             }

@@ -31,7 +31,7 @@ class RequestServiceTest {
 
     @Test
     void filter() {
-        User u = userService.save(new User(null, "name", "email", "digest", false,
+        User u = userService.save(new User(null, "name", "email@filter.net", "digest", false,
                 true, null, null, null));
 
         Request r1 = service.save(

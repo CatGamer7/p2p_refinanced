@@ -20,11 +20,11 @@ class UserServiceTest {
     @Test
     void filter() {
         User u1 = service.save(
-                new User(null, "name", "email 1", "digest",
+                new User(null, "name", "email1@filter.net", "digest",
                         true, true,null, null, null)
         );
         User u2 = service.save(
-                new User(null, "name 2", "email 2", "digest 2",
+                new User(null, "name 2", "email2@filter.net", "digest 2",
                         false, false,null, null, null)
         );
 

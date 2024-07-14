@@ -48,7 +48,7 @@ class MatchServiceTest {
     @Transactional
     void list() {
         User u1 = userService.save(
-                new User(null, "name", "email 1", "digest",
+                new User(null, "name", "email1@list.net", "digest",
                         true, true,null, null, null)
         );
 

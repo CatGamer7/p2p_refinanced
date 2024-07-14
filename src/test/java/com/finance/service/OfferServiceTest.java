@@ -87,7 +87,7 @@ class OfferServiceTest {
         Offer o1 = new Offer(null, null, BigDecimal.valueOf(9000.00), BigDecimal.valueOf(5),
                 OfferStatus.available, 30L, null, Arrays.asList());
 
-        User u = userService.save(new User(null, "name", "mail", "password_digest",
+        User u = userService.save(new User(null, "name", "mail@setuser.net", "password_digest",
                 true, true, null, new ArrayList<Request>(), new ArrayList<Offer>()));
 
         service.setUser(o1, u.getUserId());

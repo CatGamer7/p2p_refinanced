@@ -3,6 +3,7 @@ package com.finance.model.user;
 import com.finance.model.offer.Offer;
 import com.finance.model.request.Request;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -29,6 +30,7 @@ public class User {
 
     @Column(name = "email", unique = true)
     @NotBlank(message = "Must provide unique email for user")
+    @Email(message = "Email is not valid", regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
     private String email;
 
     @Column(name = "password_digest")

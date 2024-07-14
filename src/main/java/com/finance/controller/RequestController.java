@@ -15,10 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
-import static com.finance.service.RequestService.oldestFirst;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +23,6 @@ import java.util.Optional;
 @CrossOrigin
 @RestController
 @RequestMapping("/api")
-@EnableScheduling
 public class RequestController {
 
     @Autowired
@@ -34,9 +30,6 @@ public class RequestController {
 
     @Autowired
     private ModelMapper modelMapper;
-
-    @Autowired
-    private MatchStrategyMinOffers strat = new MatchStrategyMinOffers();
 
     private int pageSize = 100;
 
@@ -128,20 +121,11 @@ public class RequestController {
         return new ResponseEntity<>(requestDto, HttpStatus.OK);
     }
 
-
-    @PostMapping("/request/test-run")
-    public ResponseEntity<Void> testRun() {
-        runStrategy();
+    @PostMapping("/request/test-run/{id}")
+    public ResponseEntity<Void> testRun(@PathVariable("id") int id) {
+        service.runStrategy(id);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @Scheduled(fixedDelay = 10000)
-    private void runStrategy() {
-        List<Request> requests = service.list(RequestService.specificationAvailable(), oldestFirst);
-
-        for (Request r : requests) {
-            strat.matchRequest(r);
-        }
-    }
 }

@@ -3,7 +3,10 @@ package com.finance.controller;
 import com.finance.dto.request.FilterDTO;
 import com.finance.dto.request.RequestDTO;
 import com.finance.dto.response.RequestFullDTO;
+import com.finance.matching.strategy.sorted.MatchStrategyMaxDuration;
+import com.finance.matching.strategy.sorted.MatchStrategyMinDuration;
 import com.finance.matching.strategy.sorted.MatchStrategyMinOffers;
+import com.finance.matching.strategy.sorted.MatchStrategyMinPercent;
 import com.finance.model.request.Request;
 import com.finance.model.request.RequestStatus;
 import com.finance.service.RequestService;
@@ -45,9 +48,6 @@ class RequestControllerTest {
 
     @MockBean
     private RequestService requestService;
-
-    @MockBean
-    private MatchStrategyMinOffers strat;
 
     @Autowired
     private JacksonTester<RequestDTO> jsonRequest;

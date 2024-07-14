@@ -1,6 +1,7 @@
 package com.finance.service;
 
 import com.finance.dto.request.FilterDTO;
+import com.finance.matching.strategy.sorted.*;
 import com.finance.model.proposal.Proposal;
 import com.finance.model.request.Request;
 import com.finance.model.request.RequestStatus;
@@ -14,6 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -21,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@EnableScheduling
 public class RequestService implements RequestServiceInterface {
 
     @Autowired
@@ -34,6 +38,18 @@ public class RequestService implements RequestServiceInterface {
 
     @Autowired
     private SpecificationHelper<Request> spec;
+
+    @Autowired
+    private MatchStrategyMinOffers strat;
+
+    @Autowired
+    private MatchStrategyMinPercent minPercentStrat;
+
+    @Autowired
+    private MatchStrategyMinDuration minDurationStrat;
+
+    @Autowired
+    private MatchStrategyMaxDuration maxDurationStrat;
 
     public static List<Sort.Order> oldestFirst = Arrays.asList(new Sort.Order[] {
             new Sort.Order(Sort.Direction.ASC, "createdTimestamp")
@@ -101,6 +117,43 @@ public class RequestService implements RequestServiceInterface {
         }
         else {
             throw new EntityNotFoundException("No user found by specified id");
+        }
+    }
+
+    //@Scheduled(fixedDelay = 10000)
+    private void scheduledStrategy() {
+        runStrategy(0);
+    }
+
+    public void runStrategy(int i) {
+        List<Request> requests = list(RequestService.specificationAvailable(), oldestFirst);
+
+        AbstractMatchStrategySort strategy;
+
+        switch (i) {
+            case 0:
+                strategy = strat;
+                break;
+
+            case 1:
+                strategy = minPercentStrat;
+                break;
+
+            case 2:
+                strategy = minDurationStrat;
+                break;
+
+            case 3:
+                strategy = maxDurationStrat;
+                break;
+
+            default:
+                strategy = strat;
+                break;
+        }
+
+        for (Request r : requests) {
+            strategy.matchRequest(r);
         }
     }
 }
