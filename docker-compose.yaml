@@ -2,19 +2,6 @@ volumes:
     db:
 
 services:
-    spring_pp:
-        build:
-            context: .
-        depends_on:
-            - finance_db
-        environment:
-            - SPRING_DATASOURCE_URL=jdbc:postgresql://finance_db:5432/finance
-            - SPRING_DATASOURCE_USERNAME=ChangeMe
-            - SPRING_DATASOURCE_PASSWORD=ChangeMe
-
-        ports:
-            - "8081:8080"
-
     finance_db:
         build: ./database
         environment:
