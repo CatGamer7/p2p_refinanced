@@ -120,7 +120,7 @@ public class RequestService implements RequestServiceInterface {
         }
     }
 
-    //@Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 10000)
     private void scheduledStrategy() {
         runStrategy(0);
     }
