@@ -2,11 +2,15 @@ package com.finance.controller;
 
 import com.finance.dto.request.FilterDTO;
 import com.finance.dto.request.MatchStatusDTO;
-import com.finance.dto.response.MatchFullDTO;
-import com.finance.dto.response.ProposalFullDTO;
+import com.finance.dto.response.*;
 import com.finance.model.match.Match;
 import com.finance.model.match.MatchStatus;
+import com.finance.model.offer.Offer;
+import com.finance.model.offer.OfferStatus;
 import com.finance.model.proposal.ProposalStatus;
+import com.finance.model.request.RequestStatus;
+import com.finance.model.user.User;
+import com.finance.security.WithStaffUser;
 import com.finance.service.match.MatchService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +44,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @AutoConfigureJsonTesters
 @WebMvcTest(value = MatchController.class)
-@WithMockUser
+@WithStaffUser
 class MatchControllerTest {
 
     @Autowired
@@ -97,8 +101,14 @@ class MatchControllerTest {
 
     @Test
     void deleteT() throws Exception {
+        User u = new User(0L, "name", "email", "digest",
+                true, true, null, null, null);
+
+        Offer o = new Offer(0L, u, BigDecimal.valueOf(90000.00),
+                BigDecimal.valueOf(5), OfferStatus.available, 91L,null, null);
+
         given(matchService.getOne(0L))
-                .willReturn(Optional.of(new Match(0L, null, BigDecimal.valueOf(9000.00),
+                .willReturn(Optional.of(new Match(0L, o, BigDecimal.valueOf(9000.00),
                         MatchStatus.created, null, null))
                 );
 
@@ -115,8 +125,14 @@ class MatchControllerTest {
 
     @Test
     void update() throws Exception {
+        User u = new User(0L, "name", "email", "digest",
+                true, true, null, null, null);
+
+        Offer o = new Offer(0L, u, BigDecimal.valueOf(90000.00),
+                BigDecimal.valueOf(5), OfferStatus.available, 91L,null, null);
+
         given(matchService.getOne(0L))
-                .willReturn(Optional.of(new Match(0L, null, BigDecimal.valueOf(9000.00),
+                .willReturn(Optional.of(new Match(0L, o, BigDecimal.valueOf(9000.00),
                         MatchStatus.created, null, null))
                 );
 
@@ -126,8 +142,15 @@ class MatchControllerTest {
 
         String payload = jsonMatchStatus.write(statusDTO).getJson();
 
-        MatchFullDTO updatedDTO = new MatchFullDTO(0L, null, BigDecimal.valueOf(9000.00),
+
+        //Expect
+        UserDTO uDto = new UserDTO(0L, "name", "email",
+                true, true, null);
+        OfferFullDTO oDto = new OfferFullDTO(0L, uDto, BigDecimal.valueOf(90000.00),
+                BigDecimal.valueOf(5), OfferStatus.available, 91L,null);
+        MatchFullDTO updatedDTO = new MatchFullDTO(0L, oDto, BigDecimal.valueOf(9000.00),
                 MatchStatus.accepted, null, null);
+        //
 
         // when
         MockHttpServletResponse response = mvc.perform(

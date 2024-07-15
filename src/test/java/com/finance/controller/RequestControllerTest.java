@@ -9,6 +9,8 @@ import com.finance.matching.strategy.sorted.MatchStrategyMinOffers;
 import com.finance.matching.strategy.sorted.MatchStrategyMinPercent;
 import com.finance.model.request.Request;
 import com.finance.model.request.RequestStatus;
+import com.finance.model.user.User;
+import com.finance.security.WithStaffUser;
 import com.finance.service.RequestService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +42,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @AutoConfigureJsonTesters
 @WebMvcTest(value = RequestController.class)
-@WithMockUser
+@WithStaffUser
 class RequestControllerTest {
 
     @Autowired
@@ -145,8 +147,11 @@ class RequestControllerTest {
 
     @Test
     void deleteT() throws Exception {
+        User u = new User(0L, "name", "email", "digest",
+                true, true, null, null, null);
+
         given(requestService.getOne(0L))
-                .willReturn(Optional.of(new Request(0L, null, BigDecimal.valueOf(9000.00),
+                .willReturn(Optional.of(new Request(0L, u, BigDecimal.valueOf(9000.00),
                         "reason", RequestStatus.pending, null, null))
                 );
 
@@ -163,8 +168,11 @@ class RequestControllerTest {
 
     @Test
     void create() throws Exception {
+        User u = new User(0L, "name", "email", "digest",
+                true, true, null, null, null);
+
         given(requestService.getOne(0L))
-                .willReturn(Optional.of(new Request(0L, null, BigDecimal.valueOf(9000.00),
+                .willReturn(Optional.of(new Request(0L, u, BigDecimal.valueOf(9000.00),
                         "reason", RequestStatus.pending, null, null))
                 );
 

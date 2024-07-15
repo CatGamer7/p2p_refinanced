@@ -6,11 +6,14 @@ import com.finance.dto.request.ProposalCreateDTO;
 import com.finance.dto.request.ProposalStatusDTO;
 import com.finance.dto.response.*;
 import com.finance.model.match.MatchStatus;
+import com.finance.model.offer.Offer;
 import com.finance.model.offer.OfferStatus;
 import com.finance.model.proposal.Proposal;
 import com.finance.model.proposal.ProposalStatus;
 import com.finance.model.request.Request;
 import com.finance.model.request.RequestStatus;
+import com.finance.model.user.User;
+import com.finance.security.WithStaffUser;
 import com.finance.service.OfferService;
 import com.finance.service.RequestService;
 import com.finance.service.proposal.ProposalService;
@@ -47,7 +50,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @AutoConfigureJsonTesters
 @WebMvcTest(value = ProposalController.class)
-@WithMockUser
+@WithStaffUser
 class ProposalControllerTest {
 
     @Autowired
@@ -113,8 +116,14 @@ class ProposalControllerTest {
 
     @Test
     void deleteT() throws Exception {
+        User u = new User(0L, "name", "email", "digest",
+                true, true, null, null, null);
+
+        Request r = new Request(0L, u, BigDecimal.valueOf(9000.00),
+                "reason", RequestStatus.pending, null, null);
+
         given(proposalService.getOne(0L))
-                .willReturn(Optional.of(new Proposal(0L, null, ProposalStatus.created,
+                .willReturn(Optional.of(new Proposal(0L, r, ProposalStatus.created,
                         null, null))
                 );
 
@@ -131,8 +140,14 @@ class ProposalControllerTest {
 
     @Test
     void update() throws Exception {
+        User u = new User(0L, "name", "email", "digest",
+                true, true, null, null, null);
+
+        Request r = new Request(0L, u, BigDecimal.valueOf(9000.00),
+                "reason", RequestStatus.pending, null, null);
+
         given(proposalService.getOne(0L))
-                .willReturn(Optional.of(new Proposal(0L, null, ProposalStatus.created,
+                .willReturn(Optional.of(new Proposal(0L, r, ProposalStatus.created,
                         null, null))
                 );
 
@@ -142,8 +157,14 @@ class ProposalControllerTest {
 
         String payload = jsonProposalStatus.write(statusDTO).getJson();
 
-        ProposalFullDTO updatedDTO = new ProposalFullDTO(0L, null, ProposalStatus.accepted,
+        //Expect
+        UserDTO uDto = new UserDTO(0L, "name", "email",
+                true, true, null);
+        RequestFullDTO rDto = new RequestFullDTO(0L, uDto, BigDecimal.valueOf(9000.00),
+                "reason", RequestStatus.pending, null);
+        ProposalFullDTO updatedDTO = new ProposalFullDTO(0L, rDto, ProposalStatus.accepted,
                 null, null);
+        //
 
         // when
         MockHttpServletResponse response = mvc.perform(
@@ -163,7 +184,10 @@ class ProposalControllerTest {
 
     @Test
     void create() throws Exception {
-        Request r = new Request(0L, null, BigDecimal.valueOf(9000.00),
+        User u = new User(0L, "name", "email", "digest",
+                true, true, null, null, null);
+
+        Request r = new Request(0L, u, BigDecimal.valueOf(9000.00),
                 "reason", RequestStatus.pending, null, null);
 
         given(requestService.getOne(0L))
@@ -172,9 +196,14 @@ class ProposalControllerTest {
 
         doAnswer(returnsFirstArg()).when(proposalService).save(any());
         doAnswer(returnsFirstArg()).when(offerService).save(any());
+        doAnswer(invocation  -> {
+            Offer o = invocation.getArgument(0);
+            o.setLender(u);
+            return null;
+        }).when(offerService).setUser(any(Offer.class), any(Long.class));
 
         ProposalCreateDTO createDTO = new ProposalCreateDTO(
-                new OfferDTO(null, null, BigDecimal.valueOf(9000.00),
+                new OfferDTO(0L, 0L, BigDecimal.valueOf(9000.00),
                         BigDecimal.valueOf(5), OfferStatus.available, 91L),
                 0L
         );
@@ -182,9 +211,11 @@ class ProposalControllerTest {
         String payload = jsonCreate.write(createDTO).getJson();
 
         //Expect
-        RequestFullDTO rDto = new RequestFullDTO(0L, null, BigDecimal.valueOf(9000.00),
+        UserDTO uDTO = new UserDTO(0L, "name", "email",
+                true, true, null);
+        RequestFullDTO rDto = new RequestFullDTO(0L, uDTO, BigDecimal.valueOf(9000.00),
                 "reason", RequestStatus.pending, null);
-        OfferFullDTO oDto = new OfferFullDTO(null, null, BigDecimal.valueOf(9000.00),
+        OfferFullDTO oDto = new OfferFullDTO(0L, uDTO, BigDecimal.valueOf(9000.00),
                 BigDecimal.valueOf(5), OfferStatus.available, 91L, null);
         PrposalBriefDTO pbDto = new PrposalBriefDTO(null, ProposalStatus.created, rDto);
         MatchFullDTO mDto = new MatchFullDTO(null, oDto, BigDecimal.valueOf(9000.00),

@@ -5,6 +5,8 @@ import com.finance.dto.request.OfferDTO;
 import com.finance.dto.response.OfferFullDTO;
 import com.finance.model.offer.Offer;
 import com.finance.model.offer.OfferStatus;
+import com.finance.model.user.User;
+import com.finance.security.WithStaffUser;
 import com.finance.service.OfferService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +35,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @AutoConfigureJsonTesters
 @WebMvcTest(value = OfferController.class)
-@WithMockUser
+@WithStaffUser
 class OfferControllerTest {
 
     @Autowired
@@ -140,8 +142,11 @@ class OfferControllerTest {
 
     @Test
     void deleteT() throws Exception {
+        User u = new User(0L, "name", "email", "digest",
+                true, true, null, null, null);
+
         given(offerService.getOne(0L))
-                .willReturn(Optional.of(new Offer(0L, null, BigDecimal.valueOf(90000.00),
+                .willReturn(Optional.of(new Offer(0L, u, BigDecimal.valueOf(90000.00),
                         BigDecimal.valueOf(5), OfferStatus.available, 91L,null, null))
                 );
 
@@ -158,8 +163,11 @@ class OfferControllerTest {
 
     @Test
     void create() throws Exception {
+        User u = new User(0L, "name", "email", "digest",
+                true, true, null, null, null);
+
         given(offerService.getOne(0L))
-                .willReturn(Optional.of(new Offer(0L, null, BigDecimal.valueOf(90000.00),
+                .willReturn(Optional.of(new Offer(0L, u, BigDecimal.valueOf(90000.00),
                         BigDecimal.valueOf(5), OfferStatus.available, 91L,null, null))
                 );
 

@@ -14,6 +14,7 @@ import com.finance.model.user.UserSecurityAdapter;
 import com.finance.service.OfferService;
 import com.finance.service.RequestService;
 import com.finance.service.proposal.ProposalService;
+import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

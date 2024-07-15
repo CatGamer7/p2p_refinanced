@@ -6,10 +6,14 @@ import com.finance.dto.response.UserDTO;
 import com.finance.model.offer.Offer;
 import com.finance.model.request.Request;
 import com.finance.model.user.User;
+import com.finance.model.user.UserAuthority;
+import com.finance.model.user.UserSecurityAdapter;
+import com.finance.security.WithStaffUser;
 import com.finance.service.OfferService;
 import com.finance.service.RequestService;
 import com.finance.service.UserService;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -20,8 +24,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.security.Principal;
 import java.util.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -33,7 +39,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @AutoConfigureJsonTesters
 @WebMvcTest(value = UserController.class)
-@WithMockUser
+@WithStaffUser
 class UserControllerTest {
 
     @Autowired
