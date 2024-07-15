@@ -4,7 +4,10 @@ volumes:
 services:
     finance_db:
         build: ./database
-
+        environment:
+            - POSTGRES_DB=finance
+            - POSTGRES_USER=ChangeMe
+            - POSTGRES_PASSWORD=ChangeMe
         volumes:
             - db:/var/lib/postgresql/data
         ports:
