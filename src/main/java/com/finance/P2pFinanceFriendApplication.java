@@ -28,7 +28,12 @@ public class P2pFinanceFriendApplication {
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**")
 						.allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
-						.allowedOrigins("http://localhost:3000/");
+						.allowedOrigins(
+								"http://localhost:3000/",
+								"http://localhost:3001/",
+								"http://react_app:3000/",
+								"http://react_app:3001/"
+						);
 			}
 		};
 	}
