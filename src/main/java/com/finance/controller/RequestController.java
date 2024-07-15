@@ -5,6 +5,7 @@ import com.finance.dto.request.RequestDTO;
 import com.finance.dto.response.RequestFullDTO;
 import com.finance.matching.strategy.sorted.*;
 import com.finance.model.request.Request;
+import com.finance.model.user.UserSecurityAdapter;
 import com.finance.service.RequestService;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
@@ -15,10 +16,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+
+import static com.finance.model.user.UserAuthority.USER;
 
 @CrossOrigin
 @RestController
@@ -76,10 +80,18 @@ public class RequestController {
     }
 
     @DeleteMapping("/request/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id,
+                                       @AuthenticationPrincipal UserSecurityAdapter user) {
         Optional<Request> possibleRequest = service.getOne(id);
 
         if (possibleRequest.isPresent()) {
+
+            //Only resource owner and staff can manipulate
+            if ((user.id != possibleRequest.get().getBorrower().getUserId())
+                    && (user.getAuthorities().contains(USER))) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+
             service.delete(possibleRequest.get());
 
             return new ResponseEntity<>(HttpStatus.OK);
@@ -90,7 +102,8 @@ public class RequestController {
     }
 
     @PutMapping("/request")
-    public ResponseEntity create(@RequestBody RequestDTO requestDto) {
+    public ResponseEntity create(@RequestBody RequestDTO requestDto,
+                                 @AuthenticationPrincipal UserSecurityAdapter user) {
         Request newRequest = modelMapper.map(requestDto, Request.class);
 
         try {
@@ -106,12 +119,23 @@ public class RequestController {
 
             //If object exists - update
             if (possibleRequest.isPresent()) {
+
+                //Only resource owner can manipulate
+                if (user.id != possibleRequest.get().getBorrower().getUserId()) {
+                    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                }
+
                 Request updated = possibleRequest.get();
                 updated.setFields(newRequest);
                 service.save(updated);
 
                 return new ResponseEntity<>(requestDto, HttpStatus.OK);
             }
+        }
+
+        //Cannot create as someone else
+        if ((user.id != newRequest.getBorrower().getUserId())) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         //Else - create

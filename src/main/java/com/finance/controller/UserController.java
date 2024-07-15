@@ -6,6 +6,7 @@ import com.finance.dto.request.UserFullDTO;
 import com.finance.model.offer.Offer;
 import com.finance.model.request.Request;
 import com.finance.model.user.User;
+import com.finance.model.user.UserSecurityAdapter;
 import com.finance.service.OfferService;
 import com.finance.service.RequestService;
 import com.finance.service.UserService;
@@ -17,10 +18,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+
+import static com.finance.model.user.UserAuthority.USER;
 
 @CrossOrigin
 @RestController
@@ -70,6 +75,7 @@ public class UserController {
     }
 
     @DeleteMapping("/user/{id}")
+    @PreAuthorize("hasAuthority('staff') or (authentication.principal.id == #id)")
     public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         Optional<User> possibleUser = service.getOne(id);
 
@@ -101,14 +107,15 @@ public class UserController {
 
         return new ResponseEntity<>(
                 service.list(filters, pageable).map(
-                        offer -> modelMapper.map(offer, UserDTO.class)
+                        user -> modelMapper.map(user, UserDTO.class)
                 ),
                 HttpStatus.OK
         );
     }
 
     @PutMapping("/user")
-    public ResponseEntity<UserDTO> create(@RequestBody UserFullDTO userDTO) {
+    public ResponseEntity<UserDTO> create(@RequestBody UserFullDTO userDTO,
+                                          @AuthenticationPrincipal UserSecurityAdapter user) {
         User newUser = modelMapper.map(userDTO, User.class);
 
         //If id was passed - try to retrieve
@@ -117,6 +124,12 @@ public class UserController {
 
             //If object exists - update
             if (possibleUser.isPresent()) {
+                //Edit permission check
+                if ((user.id != possibleUser.get().getUserId())
+                && (user.getAuthorities().contains(USER))) {
+                    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                }
+
                 User updated = possibleUser.get();
                 updated.setFields(newUser);
                 service.save(updated);

@@ -10,6 +10,7 @@ import com.finance.model.offer.Offer;
 import com.finance.model.proposal.Proposal;
 import com.finance.model.proposal.ProposalStatus;
 import com.finance.model.request.Request;
+import com.finance.model.user.UserSecurityAdapter;
 import com.finance.service.OfferService;
 import com.finance.service.RequestService;
 import com.finance.service.proposal.ProposalService;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -61,16 +63,18 @@ public class ProposalController {
     }
 
     @DeleteMapping("/proposal/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id,
+                                       @AuthenticationPrincipal UserSecurityAdapter user) {
         Optional<Proposal> possibleProposal = service.getOne(id);
 
         if (possibleProposal.isPresent()) {
-            try {
-                service.delete(id);
+
+            //Only resource owner  can manipulate
+            if (user.id != possibleProposal.get().getRequest().getBorrower().getUserId()) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
-            catch (Exception e) {
-                int a = 1;
-            }
+
+            service.delete(id);
 
             return new ResponseEntity<>(HttpStatus.OK);
         }
@@ -81,10 +85,17 @@ public class ProposalController {
 
     @PatchMapping("/proposal/{id}")
     public ResponseEntity<ProposalFullDTO> update(@PathVariable("id") Long id,
-                                               @RequestBody ProposalStatusDTO proposalStatusDTO) {
+                                                  @RequestBody ProposalStatusDTO proposalStatusDTO,
+                                                  @AuthenticationPrincipal UserSecurityAdapter user) {
         Optional<Proposal> possibleProposal = service.getOne(id);
 
         if (possibleProposal.isPresent()) {
+
+            //Only resource owner  can manipulate
+            if (user.id != possibleProposal.get().getRequest().getBorrower().getUserId()) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+
             Proposal p = possibleProposal.get();
             p.setStatus(proposalStatusDTO.getStatus());
             p = service.save(p);
@@ -98,12 +109,19 @@ public class ProposalController {
     }
 
     @PutMapping("/proposal")
-    public ResponseEntity<ProposalFullDTO> create(@RequestBody ProposalCreateDTO proposalCreateDTO) {
+    public ResponseEntity<ProposalFullDTO> create(@RequestBody ProposalCreateDTO proposalCreateDTO,
+                                                  @AuthenticationPrincipal UserSecurityAdapter user) {
         Optional<Request> rOptional = requestService.getOne(proposalCreateDTO.getRequestId());
 
         if (rOptional.isPresent()) {
             Offer o = modelMapper.map(proposalCreateDTO.getOffer(), Offer.class);
             offerService.setUser(o, proposalCreateDTO.getOffer().getLenderId());
+
+            //Cannot create as someone else
+            if ((user.id != o.getLender().getUserId())) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+
             o = offerService.save(o);
 
             Match m = new Match(null, o, o.getAmount(), MatchStatus.created, null, null);

@@ -3,6 +3,7 @@ package com.finance.service;
 import com.finance.dto.request.FilterDTO;
 import com.finance.model.user.User;
 import com.finance.model.user.UserAuthority;
+import com.finance.model.user.UserSecurityAdapter;
 import com.finance.repository.UserRepository;
 import com.finance.service.interfaces.UserServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +72,8 @@ public class UserService implements UserServiceInterface, UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User u = repository.findByEmail(username);
-        return new org.springframework.security.core.userdetails.User(
+        return new UserSecurityAdapter(
+                u.getUserId(),
                 u.getEmail(),
                 u.getPasswordDigest(),
                 Arrays.asList(new UserAuthority(u.isStaff()))

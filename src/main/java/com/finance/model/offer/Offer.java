@@ -52,7 +52,6 @@ public class Offer {
     private List<Match> matches = null;
 
     public void setFields(Offer in) {
-        lender = in.getLender();
         amount = in.getAmount();
         interestRate = in.getInterestRate();
         status = in.getStatus();

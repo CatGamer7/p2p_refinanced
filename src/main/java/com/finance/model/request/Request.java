@@ -49,7 +49,6 @@ public class Request {
     private List<Proposal> proposals = null;
 
     public void setFields(Request in) {
-        borrower = in.getBorrower();
         requestedAmount = in.getRequestedAmount();
         reason = in.getReason();
         status = in.getStatus();

@@ -4,6 +4,7 @@ import com.finance.dto.request.FilterDTO;
 import com.finance.dto.response.OfferFullDTO;
 import com.finance.model.offer.Offer;
 import com.finance.dto.request.OfferDTO;
+import com.finance.model.user.UserSecurityAdapter;
 import com.finance.service.OfferService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
@@ -14,10 +15,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+
+import static com.finance.model.user.UserAuthority.USER;
 
 @CrossOrigin
 @RestController
@@ -75,10 +79,18 @@ public class OfferController {
     }
 
     @DeleteMapping("/offer/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id,
+                                       @AuthenticationPrincipal UserSecurityAdapter user) {
         Optional<Offer> possibleOffer = service.getOne(id);
 
         if (possibleOffer.isPresent()) {
+
+            //Only resource owner and staff can manipulate
+            if ((user.id != possibleOffer.get().getLender().getUserId())
+                    && (user.getAuthorities().contains(USER))) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+
             service.delete(possibleOffer.get());
 
             return new ResponseEntity<>(HttpStatus.OK);
@@ -89,7 +101,8 @@ public class OfferController {
     }
 
     @PutMapping("/offer")
-    public ResponseEntity create(@RequestBody OfferDTO offerDto) {
+    public ResponseEntity create(@RequestBody OfferDTO offerDto,
+                                 @AuthenticationPrincipal UserSecurityAdapter user) {
         Offer newOffer = modelMapper.map(offerDto, Offer.class);
 
         try {
@@ -105,12 +118,23 @@ public class OfferController {
 
             //If object exists - update
             if (possibleOffer.isPresent()) {
+
+                //Only resource owner can manipulate
+                if (user.id != possibleOffer.get().getLender().getUserId()) {
+                    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                }
+
                 Offer updated = possibleOffer.get();
                 updated.setFields(newOffer);
                 service.save(updated);
 
                 return new ResponseEntity<>(offerDto, HttpStatus.OK);
             }
+        }
+
+        //Cannot create as someone else
+        if ((user.id != newOffer.getLender().getUserId())) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         //Else - create
